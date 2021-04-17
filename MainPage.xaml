@@ -1,0 +1,28 @@
+﻿<Page
+    x:Class="Dictation.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Dictation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    >
+    <!--Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"-->
+    <Grid>
+        <RelativePanel VariableSizedWrapGrid.ColumnSpan="0"  BorderBrush="Violet" BorderThickness="3" >
+            <StackPanel x:Name="panelButtons" BorderBrush="Brown" Orientation="Vertical" RelativePanel.AlignHorizontalCenterWith="" Height="277" >
+                <Button Content="Start recording" Width="200" Height="70" Margin="10,20,10,0" FontSize="25" Background="#3309FF03" Click="Start_Button_Click" />
+                <Button Content="Stop recording" Width="200" Height="70"  Margin="10" FontSize="25" Background="#3309FF03" Click="Stop_Button_Click"/>
+                <Button x:Name="ClearButton" Content="Clear Text" Width="200" Height="70" Margin="10" FontSize="25" Background="#3309FF03" Click="Clear_Button_Click"/>
+            </StackPanel>
+            <StackPanel x:Name="dictationBlock" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="437" Width="584">
+                <Grid Height="438">
+                    <Border BorderBrush="White" BorderThickness="2" Margin="5">
+                        <TextBlock x:Name="dictationTextBox" Text="{x:Bind RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder}" FontSize="16" FontFamily="Bahnschrift Light" Margin="10" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </RelativePanel>
+    </Grid>
+</Page>
