@@ -8,25 +8,52 @@ using Windows.UI.Core;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Popups;
+using Windows.Globalization;
 
 namespace Dictation
 {
     class RecognizerSpeech
     {
-        public SpeechRecognizer speechRecognizer = new SpeechRecognizer();
+        private SpeechRecognizer speechRecognizer;
         private CoreDispatcher dispatcher;
         public StringBuilder dictatedTextBuilder = new StringBuilder();
         
+
+        public SpeechRecognizer SpeechRecognizer
+        {
+            get { return speechRecognizer; }
+            set
+            {
+                if (value != null)
+                {
+                    speechRecognizer = value;
+                }
+            }
+        }
+
         public RecognizerSpeech(CoreDispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
+            this.speechRecognizer = new SpeechRecognizer();
             speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ContinuousRecognitionSession_ResultGenerated;
             speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
             speechRecognizer.HypothesisGenerated += SpeechRecognizer_HypothesisGenerated;
-            CompileCinstrains();
+            CompileConstrains();
         }
 
-        private async void CompileCinstrains()
+        public RecognizerSpeech(CoreDispatcher dispatcher, Language languageSpeech)
+        {
+            this.dispatcher = dispatcher;
+            this.speechRecognizer = new SpeechRecognizer(languageSpeech);
+            speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ContinuousRecognitionSession_ResultGenerated;
+            speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
+            speechRecognizer.HypothesisGenerated += SpeechRecognizer_HypothesisGenerated;
+            CompileConstrains();
+
+        }
+
+
+        private async void CompileConstrains()
         {
             SpeechRecognitionCompilationResult result = await speechRecognizer.CompileConstraintsAsync();
         }
@@ -103,5 +130,6 @@ namespace Dictation
         {
             dictatedTextBuilder.Clear();
         }
+
     }
 }

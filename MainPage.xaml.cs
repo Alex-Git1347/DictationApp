@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Globalization;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -32,7 +34,49 @@ namespace Dictation
         public MainPage()
         {
             this.InitializeComponent();
-            RecognizerViewModel = new RecognizerSpeechViewModel(dispatcher);            
+            RecognizerViewModel = new RecognizerSpeechViewModel(dispatcher);
+            PopulateLanguageDropdown();
+        }
+
+        private void PopulateLanguageDropdown()
+        {
+            Language defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
+            IEnumerable<Language> supportedLanguages = SpeechRecognizer.SupportedTopicLanguages;
+            foreach (Language lang in supportedLanguages)
+            {
+                ComboBoxItem item = new ComboBoxItem();
+                item.Tag = lang;
+                item.Content = lang.DisplayName;
+
+                cbLanguageSelection.Items.Add(item);
+                if (lang.LanguageTag == defaultLanguage.LanguageTag)
+                {
+                    item.IsSelected = true;
+                    cbLanguageSelection.SelectedItem = item;
+                }
+            }
+        }
+
+        private async void cbLanguageSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer != null)
+            {
+                ComboBoxItem item = (ComboBoxItem)(cbLanguageSelection.SelectedItem);
+                Language newLanguage = (Language)item.Tag;
+                if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer.CurrentLanguage != newLanguage)
+                {
+                    try
+                    {
+                        RecognizerViewModel.RecognizerSpeech = null;
+                        RecognizerViewModel.RecognizerSpeech = new RecognizerSpeech(dispatcher, newLanguage);
+                    }
+                    catch (Exception exception)
+                    {
+                        var messageDialog = new Windows.UI.Popups.MessageDialog(exception.Message, "Exception");
+                        await messageDialog.ShowAsync();
+                    }
+                }
+            }
         }
 
         private void Start_Button_Click(object sender, RoutedEventArgs e)
@@ -57,6 +101,11 @@ namespace Dictation
         {
             RecognizerViewModel.RecognizerSpeech.ClearRecordingText();
             Bindings.Update();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
