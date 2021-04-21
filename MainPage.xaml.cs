@@ -4,11 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Globalization;
 using Windows.Media.SpeechRecognition;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -30,12 +33,15 @@ namespace Dictation
     {
         private CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         private RecognizerSpeechViewModel RecognizerViewModel { get; set; }
-
+        string languageTag = "";
+        
+        
         public MainPage()
         {
             this.InitializeComponent();
             RecognizerViewModel = new RecognizerSpeechViewModel(dispatcher);
             PopulateLanguageDropdown();
+            PopulateLanguageInterfaceDropdown();
         }
 
         private void PopulateLanguageDropdown()
@@ -57,6 +63,30 @@ namespace Dictation
             }
         }
 
+        private void PopulateLanguageInterfaceDropdown()
+        {
+            //Language defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
+            //IEnumerable<Language> supportedLanguages = SpeechRecognizer.SupportedTopicLanguages;
+            IEnumerable<string> supportedLanguages = ApplicationLanguages.ManifestLanguages;
+            Language defaultLanguage = new Language(Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride);
+            //Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("Language", "ru");
+
+            foreach (string lang in supportedLanguages)
+            {
+                Language temp = new Language(lang);
+                ComboBoxItem item = new ComboBoxItem();
+                item.Tag = temp.LanguageTag;
+                item.Content = temp.NativeName;
+
+                LanguageInterface.Items.Add(item);
+                if (temp.LanguageTag == defaultLanguage.LanguageTag)
+                {
+                    item.IsSelected = true;
+                    LanguageInterface.SelectedItem = item;
+                }
+            }
+        }
+
         private async void cbLanguageSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer != null)
@@ -69,6 +99,7 @@ namespace Dictation
                     {
                         RecognizerViewModel.RecognizerSpeech = null;
                         RecognizerViewModel.RecognizerSpeech = new RecognizerSpeech(dispatcher, newLanguage);
+                        languageTag = newLanguage.LanguageTag;
                     }
                     catch (Exception exception)
                     {
@@ -103,9 +134,38 @@ namespace Dictation
             Bindings.Update();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             
+        }
+
+        private async void LanguageInterface_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Frame != null)
+            {
+                ComboBoxItem item = (ComboBoxItem)(LanguageInterface.SelectedItem);
+                Language newLanguage =new Language(item.Tag.ToString());
+
+                if (Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride != newLanguage.LanguageTag)
+                {
+                    try
+                    {
+                        Frame.CacheSize = 0;
+                        //Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("Language", newLanguage.LanguageTag);
+                        Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = newLanguage.LanguageTag;
+                        Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Reset();
+                        Windows.ApplicationModel.Resources.Core.ResourceContext.GetForViewIndependentUse().Reset();
+                        LanguageInterface.UpdateLayout();
+                        
+                        Frame.Navigate(this.GetType());
+                    }
+                    catch (Exception exception)
+                    {
+                        var messageDialog = new Windows.UI.Popups.MessageDialog(exception.Message, "Exception");
+                        await messageDialog.ShowAsync();
+                    }
+                }
+            }
         }
     }
 }

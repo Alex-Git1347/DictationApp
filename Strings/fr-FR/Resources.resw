@@ -117,16 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>Dictation</value>
+  </data>
   <data name="ClearButton.Content" xml:space="preserve">
-    <value>Сlear Recording</value>
+    <value>Effacer le texte de l'enregistrement</value>
   </data>
   <data name="dictationTextBox.Text" xml:space="preserve">
-    <value>Text Recording</value>
+    <value>Message texte</value>
   </data>
   <data name="StartRecordingButton.Content" xml:space="preserve">
-    <value>Start Recording</value>
+    <value>Commencer l'enregistrement</value>
+  </data>
+  <data name="StartRecordingButton.FontSize" xml:space="preserve">
+    <value>10</value>
   </data>
   <data name="StopRecordingButton.Content" xml:space="preserve">
-    <value>Stop Recording</value>
+    <value>Terminer l'enregistrement</value>
   </data>
 </root>

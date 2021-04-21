@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppDisplayName" xml:space="preserve">
-    <value>Диктовка</value>
+    <value>Dictation</value>
   </data>
   <data name="ClearButton.Content" xml:space="preserve">
-    <value>Очистить текс записи</value>
+    <value>Сlear Recording</value>
   </data>
   <data name="dictationTextBox.Text" xml:space="preserve">
-    <value>Текст записи</value>
+    <value>Text Recording</value>
   </data>
   <data name="StartRecordingButton.Content" xml:space="preserve">
-    <value>Начало записи</value>
+    <value>Start Recording</value>
   </data>
   <data name="StartRecordingButton.FontSize" xml:space="preserve">
     <value>18</value>
   </data>
   <data name="StopRecordingButton.Content" xml:space="preserve">
-    <value>Завершение записи</value>
+    <value>Stop Recording</value>
   </data>
 </root>
