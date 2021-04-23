@@ -1,26 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Resources.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Globalization;
 using Windows.Media.SpeechRecognition;
-using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -52,7 +38,7 @@ namespace Dictation
             {
                 ComboBoxItem item = new ComboBoxItem();
                 item.Tag = lang;
-                item.Content = lang.DisplayName;
+                item.Content = lang.NativeName;
 
                 cbLanguageSelection.Items.Add(item);
                 if (lang.LanguageTag == defaultLanguage.LanguageTag)
@@ -65,11 +51,8 @@ namespace Dictation
 
         private void PopulateLanguageInterfaceDropdown()
         {
-            //Language defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
-            //IEnumerable<Language> supportedLanguages = SpeechRecognizer.SupportedTopicLanguages;
             IEnumerable<string> supportedLanguages = ApplicationLanguages.ManifestLanguages;
-            Language defaultLanguage = new Language(Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride);
-            //Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("Language", "ru");
+            Language defaultLanguage = new Language(ApplicationLanguages.PrimaryLanguageOverride);
 
             foreach (string lang in supportedLanguages)
             {
@@ -103,7 +86,7 @@ namespace Dictation
                     }
                     catch (Exception exception)
                     {
-                        var messageDialog = new Windows.UI.Popups.MessageDialog(exception.Message, "Exception");
+                        var messageDialog = new MessageDialog(exception.Message, "Exception");
                         await messageDialog.ShowAsync();
                     }
                 }
@@ -134,11 +117,6 @@ namespace Dictation
             Bindings.Update();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private async void LanguageInterface_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Frame != null)
@@ -146,26 +124,39 @@ namespace Dictation
                 ComboBoxItem item = (ComboBoxItem)(LanguageInterface.SelectedItem);
                 Language newLanguage =new Language(item.Tag.ToString());
 
-                if (Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride != newLanguage.LanguageTag)
+                if (ApplicationLanguages.PrimaryLanguageOverride != newLanguage.LanguageTag)
                 {
                     try
                     {
                         Frame.CacheSize = 0;
-                        //Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("Language", newLanguage.LanguageTag);
-                        Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = newLanguage.LanguageTag;
-                        Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Reset();
-                        Windows.ApplicationModel.Resources.Core.ResourceContext.GetForViewIndependentUse().Reset();
+                        ApplicationLanguages.PrimaryLanguageOverride = newLanguage.LanguageTag;
+                        ResourceContext.GetForCurrentView().Reset();
+                        ResourceContext.GetForViewIndependentUse().Reset();
                         LanguageInterface.UpdateLayout();
                         
                         Frame.Navigate(this.GetType());
                     }
                     catch (Exception exception)
                     {
-                        var messageDialog = new Windows.UI.Popups.MessageDialog(exception.Message, "Exception");
+                        var messageDialog = new MessageDialog(exception.Message, "Exception");
                         await messageDialog.ShowAsync();
                     }
                 }
             }
+        }
+
+        private void SelectedThemePage(object sender, RoutedEventArgs e)
+        {
+            ComboBoxItem item = (ComboBoxItem)(ColorTheme.SelectedItem);
+            if (item.Content.ToString() == "Light")
+            {
+                mainPage.RequestedTheme = ElementTheme.Light;
+            }
+            else if (item.Content.ToString() == "Dark")
+            {
+                mainPage.RequestedTheme = ElementTheme.Dark;
+            }
+
         }
     }
 }
