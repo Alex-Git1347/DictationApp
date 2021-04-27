@@ -1,12 +1,25 @@
-﻿using System;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
+using Syncfusion.Pdf;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Globalization;
 using Windows.Media.SpeechRecognition;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Syncfusion.Pdf.Graphics;
+using System.Drawing;
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
+using Windows.Storage.Streams;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -20,6 +33,7 @@ namespace Dictation
         private CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         private RecognizerSpeechViewModel RecognizerViewModel { get; set; }
         string languageTag = "";
+        string CurrentFormatFile="";
         
         
         public MainPage()
@@ -95,11 +109,9 @@ namespace Dictation
 
         private void Start_Button_Click(object sender, RoutedEventArgs e)
         {
-
-            if (RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder.Length != 0)
+            if(dictationTextBox.Text.Length != 0)
             {
-                RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder.Clear();
-                Bindings.Update();
+                RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder.Append(dictationTextBox.Text);
             }
             RecognizerViewModel.RecognizerSpeech.StartRecording();
             
@@ -157,6 +169,105 @@ namespace Dictation
                 mainPage.RequestedTheme = ElementTheme.Dark;
             }
 
+        }
+                
+        private async void SaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            ComboBoxItem comboBoxItem = ((ComboBoxItem)FormatSelection.SelectedItem);
+            switch(comboBoxItem.Content.ToString())
+            {
+                case "PDF":
+                    using (Syncfusion.Pdf.PdfDocument PDFdocument = new Syncfusion.Pdf.PdfDocument())
+                    {
+                        Syncfusion.Pdf.PdfPage page = PDFdocument.Pages.Add();
+                        PdfGraphics graphics = page.Graphics;
+                        Syncfusion.Pdf.Graphics.PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
+                        graphics.DrawString(dictationTextBox.Text, font, PdfBrushes.Black, new System.Drawing.PointF(0, 0));
+                        MemoryStream ms = new MemoryStream();
+                        PDFdocument.Save(ms);
+                        PDFdocument.Close(true);
+                        SaveFilePdf.Save(ms, "New PDF file.pdf");
+                    }
+                    break;
+
+                case "DOC":
+                    WordDocument doc = new WordDocument();
+                    doc.EnsureMinimal();
+                    doc.LastParagraph.AppendText(dictationTextBox.Text);
+                    MemoryStream stream = new MemoryStream();
+                    await doc.SaveAsync(stream, FormatType.Doc);
+                    doc.Close();
+                    SaveFileDoc.SaveWord(stream, "Result.doc");
+                    break;
+
+                case "DOCX":
+                    WordDocument docx = new WordDocument();
+                    docx.EnsureMinimal();
+                    docx.LastParagraph.AppendText(dictationTextBox.Text);
+                    MemoryStream streamDocx = new MemoryStream();
+                    await docx.SaveAsync(streamDocx, FormatType.Docx);
+                    docx.Close();
+                    SaveFileDocX.SaveWord(streamDocx, "Result.docx");
+                    break;
+            }
+        }
+               
+        public string ReadPdfFile(string fileName)
+        {
+            StringBuilder text = new StringBuilder();
+
+            if (File.Exists(fileName))
+            {
+                PdfReader pdfReader = new PdfReader(fileName);
+
+                for (int page = 1; page <= pdfReader.NumberOfPages; page++)
+                {
+                    ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                    string currentText = PdfTextExtractor.GetTextFromPage(pdfReader, page, strategy);
+
+                    currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
+                    text.Append(currentText);
+                }
+                pdfReader.Close();
+            }
+            return text.ToString();
+        }
+
+        private async void OpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            ComboBoxItem comboBoxItem = ((ComboBoxItem)FormatSelection.SelectedItem);
+            switch (comboBoxItem.Content.ToString())
+            {
+                case "PDF":
+                    dictationTextBox.Text += await SaveFilePdf.Read();
+                    CurrentFormatFile = "PDF";
+                    break;
+
+                case "DOCX":
+                    dictationTextBox.Text = await SaveFileDocX.OpenFileWord().ConfigureAwait(true);
+                    CurrentFormatFile = "DOCX";
+                    break;
+
+                case "DOC":
+                    dictationTextBox.Text = await SaveFileDoc.OpenFileWord().ConfigureAwait(true);
+                    CurrentFormatFile = "DOC";
+                    break;
+            }
+        }     
+
+        private void SaveChangesCurrentFile_Click(object sender, RoutedEventArgs e)
+        {
+            switch (CurrentFormatFile)
+            {
+                case "PDF": SaveFilePdf.SaveChangesFile(dictationTextBox.Text);
+                    break;
+
+                case "DOCX": SaveFileDocX.SaveChangesFile(dictationTextBox.Text);
+                    break;
+
+                case "DOC": SaveFileDoc.SaveChangesFile(dictationTextBox.Text);
+                    break;
+            }
         }
     }
 }

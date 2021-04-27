@@ -11,7 +11,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     >
     <!--Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"-->
-    <Grid Background="{ ThemeResource SystemChromeBlackMediumColor}" x:Name="mainGrid"  >
+    <Grid Background="{ ThemeResource SystemChromeBlackMediumColor}" x:Name="mainGrid" >
         <RelativePanel VariableSizedWrapGrid.ColumnSpan="0"  BorderBrush="Violet" BorderThickness="3" >
             <StackPanel x:Name="panelButtons" Orientation="Vertical" RelativePanel.AlignHorizontalCenterWith="" Height="423" >
                 <Button x:Name="StartButton" x:Uid="StartRecordingButton" Content="Start recording" Width="200" Height="70" Margin="10,20,10,0" FontSize="20" Click="Start_Button_Click" />
@@ -37,8 +37,22 @@
             </StackPanel>
             <StackPanel x:Name="dictationBlock" Orientation="Vertical" RelativePanel.RightOf="ComboBoxPanel" Height="386" Width="496">
                 <Border BorderBrush="White"  RelativePanel.RightOf="ComboBoxPanel" BorderThickness="2" Margin="30" Height="346" Width="422">
-                    <TextBlock  x:Name="dictationTextBox"  Text="{x:Bind Path=RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder}" FontSize="16" FontFamily="Bahnschrift Light" Margin="1,2,-1,-3" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                    <TextBox x:Name="dictationTextBox"  Text="{x:Bind Path=RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder}" FontSize="16" FontFamily="Bahnschrift Light" Margin="0" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                    <!--<TextBlock  x:Name="dictationTextBox"  Text="{x:Bind Path=RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder}" FontSize="16" FontFamily="Bahnschrift Light" Margin="1,2,-1,-3" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" />-->
                 </Border>
+            </StackPanel>
+            <StackPanel x:Name="Test" Orientation="Vertical" RelativePanel.RightOf="dictationBlock" Height="574" Width="199">
+                <TextBlock Text="Format" Margin="10" FontSize="20"/>
+                <ComboBox x:Name="FormatSelection" Margin="15,5,0,5">
+                    <ComboBoxItem Content="PDF" ></ComboBoxItem>
+                    <ComboBoxItem Content="DOC" ></ComboBoxItem>
+                    <ComboBoxItem Content="DOCX" ></ComboBoxItem>
+                </ComboBox>
+                <Button x:Name="test" Content="Save file" Margin="10" Height="61" Width="136" Click="SaveFile_Click"/>
+                <Button x:Name="test1" Content="Open File" Margin="10" Height="61" Width="136" Click="OpenFile_Click"/>
+                <Button x:Name="Save" Content="Save Changes" Margin="10" Height="61" Width="136" Click="SaveChangesCurrentFile_Click" />
+                <Button x:Name="ChangeWord" Content="Change Word" Margin="10" Height="61" Width="136" Click="ChangeWord_Click"  />
+                <TextBlock x:Name="textBlock" Height="65" />
             </StackPanel>
         </RelativePanel>
     </Grid>
