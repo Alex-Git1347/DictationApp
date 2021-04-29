@@ -14,7 +14,7 @@ namespace Dictation
 {
     class SaveFileDoc
     {
-        static StorageFile openFile;
+        public static StorageFile openFile;
         public static async void SaveWord(MemoryStream streams, string filename)
         {
             streams.Position = 0;
@@ -49,24 +49,31 @@ namespace Dictation
 
         public static async Task<string> OpenFileWord()
         {
-            FileOpenPicker openPicker = new FileOpenPicker();
-            openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
-            openPicker.FileTypeFilter.Add(".doc");
-            StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
-            openFile = inputStorageFile;
+            if (openFile == null)
+            {
+                FileOpenPicker openPicker = new FileOpenPicker();
+                openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
+                openPicker.FileTypeFilter.Add(".doc");
+                StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
+                openFile = inputStorageFile;
+            }
             WordDocument document = new WordDocument();
-            await document.OpenAsync(inputStorageFile);
-            return document.GetText();
+            await document.OpenAsync(openFile).ConfigureAwait(true);
+            string docText = document.GetText();
+            document.Dispose();
+            return docText;
+
         }
 
         public static async void SaveChangesFile(string text)
         {
             WordDocument document = new WordDocument();
-            await document.OpenAsync(openFile);
+            await document.OpenAsync(openFile).ConfigureAwait(true);
             document.TextBoxes.Clear();
             document.EnsureMinimal();
             document.LastParagraph.AppendText(text);
-            await document.SaveAsync(openFile, FormatType.Docx);
+            await document.SaveAsync(openFile, FormatType.Docx).ConfigureAwait(true);
+            document.Dispose();
         }
     }
 }

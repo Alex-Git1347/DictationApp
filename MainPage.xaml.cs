@@ -20,6 +20,10 @@ using System.Drawing;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
 using Windows.Storage.Streams;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.DataTransfer.ShareTarget;
+using Windows.UI.Xaml.Navigation;
+using Syncfusion.Pdf.Parsing;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -34,7 +38,7 @@ namespace Dictation
         private RecognizerSpeechViewModel RecognizerViewModel { get; set; }
         string languageTag = "";
         string CurrentFormatFile="";
-        
+        ShareOperation shareOperation = null;
         
         public MainPage()
         {
@@ -44,7 +48,52 @@ namespace Dictation
             PopulateLanguageInterfaceDropdown();
         }
 
-        private void PopulateLanguageDropdown()
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            string textFile="";
+            if (e.Parameter != null && e.Parameter.ToString() !="")
+            {
+                this.shareOperation = (ShareOperation)e.Parameter;
+            }
+            if (this.shareOperation != null)
+            {
+                IEnumerable<IStorageItem> file = await shareOperation.Data.GetStorageItemsAsync();
+                
+                foreach(var item in file)
+                {
+                    StorageFile f = (StorageFile)item;
+                    foreach (ComboBoxItem itemBox in FormatSelection.Items)
+                    {
+                        if (itemBox.Tag.ToString() == f.FileType)
+                        {
+                            FormatSelection.SelectedItem = itemBox;
+                        }
+                    }
+
+                    switch (f.FileType)
+                    {
+                        case ".pdf": 
+                            SaveFilePdf.openFile = f;
+                            textFile = await SaveFilePdf.Read().ConfigureAwait(true);
+                            CurrentFormatFile ="PDF";
+                            break;
+                        case ".doc": 
+                            SaveFileDoc.openFile = f;
+                            textFile = await SaveFileDoc.OpenFileWord().ConfigureAwait(true);
+                            CurrentFormatFile = "DOC";
+                            break;
+                        case ".docx": 
+                            SaveFileDocX.openFile = f;
+                            textFile = await SaveFileDocX.OpenFileWord().ConfigureAwait(true);
+                            CurrentFormatFile = "DOCX";
+                            break;
+                    }
+                }
+                dictationTextBox.Text = textFile;
+            }
+        }
+
+            private void PopulateLanguageDropdown()
         {
             Language defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
             IEnumerable<Language> supportedLanguages = SpeechRecognizer.SupportedTopicLanguages;
@@ -187,6 +236,7 @@ namespace Dictation
                         PDFdocument.Save(ms);
                         PDFdocument.Close(true);
                         SaveFilePdf.Save(ms, "New PDF file.pdf");
+                        ms.Dispose();
                     }
                     break;
 
@@ -195,9 +245,10 @@ namespace Dictation
                     doc.EnsureMinimal();
                     doc.LastParagraph.AppendText(dictationTextBox.Text);
                     MemoryStream stream = new MemoryStream();
-                    await doc.SaveAsync(stream, FormatType.Doc);
+                    await doc.SaveAsync(stream, FormatType.Doc).ConfigureAwait(true);
                     doc.Close();
                     SaveFileDoc.SaveWord(stream, "Result.doc");
+                    stream.Dispose();
                     break;
 
                 case "DOCX":
@@ -205,9 +256,10 @@ namespace Dictation
                     docx.EnsureMinimal();
                     docx.LastParagraph.AppendText(dictationTextBox.Text);
                     MemoryStream streamDocx = new MemoryStream();
-                    await docx.SaveAsync(streamDocx, FormatType.Docx);
+                    await docx.SaveAsync(streamDocx, FormatType.Docx).ConfigureAwait(true);
                     docx.Close();
                     SaveFileDocX.SaveWord(streamDocx, "Result.docx");
+                    streamDocx.Dispose();
                     break;
             }
         }
@@ -239,7 +291,7 @@ namespace Dictation
             switch (comboBoxItem.Content.ToString())
             {
                 case "PDF":
-                    dictationTextBox.Text += await SaveFilePdf.Read();
+                    dictationTextBox.Text += await SaveFilePdf.Read().ConfigureAwait(true);
                     CurrentFormatFile = "PDF";
                     break;
 
@@ -259,15 +311,24 @@ namespace Dictation
         {
             switch (CurrentFormatFile)
             {
-                case "PDF": SaveFilePdf.SaveChangesFile(dictationTextBox.Text);
+                case "PDF": 
+                    SaveFilePdf.SaveChangesFile(dictationTextBox.Text);
+                    SaveFilePdf.openFile = null;
                     break;
 
-                case "DOCX": SaveFileDocX.SaveChangesFile(dictationTextBox.Text);
+                case "DOCX": 
+                    SaveFileDocX.SaveChangesFile(dictationTextBox.Text);
+                    SaveFileDocX.openFile = null;
                     break;
 
-                case "DOC": SaveFileDoc.SaveChangesFile(dictationTextBox.Text);
+                case "DOC": 
+                    SaveFileDoc.SaveChangesFile(dictationTextBox.Text);
+                    SaveFileDoc.openFile = null;
                     break;
             }
+            RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder.Clear();
+            dictationTextBox.Text = "";
+            
         }
     }
 }

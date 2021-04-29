@@ -14,13 +14,14 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using Syncfusion.Pdf.Parsing;
 using Syncfusion.Pdf;
+using Windows.ApplicationModel.Activation;
 
 namespace Dictation
 {
     class SaveFilePdf
     {
 
-        static StorageFile openFile;
+        public static StorageFile openFile;
         
         public static async void Save(Stream stream, string filename)
         {
@@ -62,11 +63,12 @@ namespace Dictation
             }
         }
 
+
         public static async void SaveChangesFile(string text)
         {
             PdfLoadedDocument loadedDocument = new PdfLoadedDocument();
             //Loads or opens an existing PDF document through Open method of PdfLoadedDocument class
-            await loadedDocument.OpenAsync(openFile);
+            await loadedDocument.OpenAsync(openFile).ConfigureAwait(true);
             loadedDocument.Pages.RemoveAt(0);
             Syncfusion.Pdf.PdfPage page = (Syncfusion.Pdf.PdfPage)loadedDocument.Pages.Add();
             PdfGraphics graphics = page.Graphics;
@@ -78,20 +80,25 @@ namespace Dictation
             //To-Do some manipulation
             //To-Do some manipulation  
             //Resave the document to the same file
-            await loadedDocument.Save();
+            await loadedDocument.Save().ConfigureAwait(true);
+            loadedDocument.Dispose();
         }
 
         public static async Task<string> Read()
         {
-            var picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add(".pdf");
-            StorageFile file = await picker.PickSingleFileAsync();
-            openFile = file;
+            if (openFile == null)
+            {
+                var picker = new FileOpenPicker();
+                picker.FileTypeFilter.Add(".pdf");
+                StorageFile file = await picker.PickSingleFileAsync();
+                openFile = file;
+            }
             PdfLoadedDocument loadedDocument = new PdfLoadedDocument();
-            await loadedDocument.OpenAsync(file);
+            await loadedDocument.OpenAsync(openFile).ConfigureAwait(true);
             PdfPageBase page = loadedDocument.Pages[0];
             string extractedText = page.ExtractText();
             loadedDocument.Close(true);
+            loadedDocument.Dispose();
             return extractedText;
         }
 

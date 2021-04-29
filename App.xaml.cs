@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,6 +24,7 @@ namespace Dictation
     /// </summary>
     sealed partial class App : Application
     {
+        public ShareOperation shareOperation;
         /// <summary>
         /// Инициализирует одноэлементный объект приложения. Это первая выполняемая строка разрабатываемого
         /// кода, поэтому она является логическим эквивалентом main() или WinMain().
@@ -37,6 +40,29 @@ namespace Dictation
         /// например, если приложение запускается для открытия конкретного файла.
         /// </summary>
         /// <param name="e">Сведения о запросе и обработке запуска.</param>
+        /// 
+
+        protected override async void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
+        {
+            shareOperation = args.ShareOperation;
+            if (shareOperation.Data.Contains(StandardDataFormats.StorageItems))
+            {
+                var file = await shareOperation.Data.GetStorageItemsAsync();
+
+                // To output the text from this example, you need a TextBlock control
+                // with a name of "sharedContent".
+
+                var rootFrame = new Frame();
+                rootFrame.Navigate(typeof(MainPage), args.ShareOperation);
+                Window.Current.Content = rootFrame;
+                Window.Current.Activate();
+                //sharedContent.Text = "Text: " + text;
+            }
+
+
+        }
+
+        
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
