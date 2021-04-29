@@ -42,24 +42,19 @@ namespace Dictation
         /// <param name="e">Сведения о запросе и обработке запуска.</param>
         /// 
 
-        protected override async void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
+        protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
         {
-            shareOperation = args.ShareOperation;
-            if (shareOperation.Data.Contains(StandardDataFormats.StorageItems))
+            if (args != null)
             {
-                var file = await shareOperation.Data.GetStorageItemsAsync();
-
-                // To output the text from this example, you need a TextBlock control
-                // with a name of "sharedContent".
-
-                var rootFrame = new Frame();
-                rootFrame.Navigate(typeof(MainPage), args.ShareOperation);
-                Window.Current.Content = rootFrame;
-                Window.Current.Activate();
-                //sharedContent.Text = "Text: " + text;
+                shareOperation = args.ShareOperation;
+                if (shareOperation.Data.Contains(StandardDataFormats.StorageItems))
+                {
+                    var rootFrame = new Frame();
+                    rootFrame.Navigate(typeof(MainPage), args.ShareOperation);
+                    Window.Current.Content = rootFrame;
+                    Window.Current.Activate();
+                }
             }
-
-
         }
 
         
@@ -76,7 +71,9 @@ namespace Dictation
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
+#pragma warning disable CA1062 // Проверить аргументы или открытые методы
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+#pragma warning restore CA1062 // Проверить аргументы или открытые методы
                 {
                     //TODO: Загрузить состояние из ранее приостановленного приложения
                 }

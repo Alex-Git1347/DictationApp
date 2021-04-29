@@ -10,8 +10,6 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.Foundation.Metadata;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
 using Syncfusion.Pdf.Parsing;
 using Syncfusion.Pdf;
 using Windows.ApplicationModel.Activation;
@@ -102,25 +100,5 @@ namespace Dictation
             return extractedText;
         }
 
-        public static string ReadPdfFile(string fileFullName)
-        {
-            StringBuilder text = new StringBuilder();
-
-            if (File.Exists(fileFullName))
-            {
-                PdfReader pdfReader = new PdfReader(fileFullName);
-
-                for (int page = 1; page <= pdfReader.NumberOfPages; page++)
-                {
-                    ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-                    string currentText = PdfTextExtractor.GetTextFromPage(pdfReader, page, strategy);
-
-                    currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
-                    text.Append(currentText);
-                }
-                pdfReader.Close();
-            }
-            return text.ToString();
-        }
     }
 }

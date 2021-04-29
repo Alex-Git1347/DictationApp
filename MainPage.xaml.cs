@@ -1,8 +1,4 @@
-﻿using iTextSharp.text;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
-using Syncfusion.Pdf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -16,23 +12,20 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Syncfusion.Pdf.Graphics;
-using System.Drawing;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
-using Windows.Storage.Streams;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.UI.Xaml.Navigation;
-using Syncfusion.Pdf.Parsing;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
+//[assembly: CLSCompliant(true)]
 namespace Dictation
 {
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage 
     {
         private CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         private RecognizerSpeechViewModel RecognizerViewModel { get; set; }
@@ -51,10 +44,19 @@ namespace Dictation
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             string textFile="";
-            if (e.Parameter != null && e.Parameter.ToString() !="")
+            if (e != null)
             {
-                this.shareOperation = (ShareOperation)e.Parameter;
+                try
+                {
+                    this.shareOperation = (ShareOperation)e.Parameter;
+                }
+                catch (InvalidCastException)
+                {
+                    //MessageDialog message = new MessageDialog(arg.ToString());
+                    //await message.ShowAsync();
+                }
             }
+            
             if (this.shareOperation != null)
             {
                 IEnumerable<IStorageItem> file = await shareOperation.Data.GetStorageItemsAsync();
@@ -92,8 +94,8 @@ namespace Dictation
                 dictationTextBox.Text = textFile;
             }
         }
-
-            private void PopulateLanguageDropdown()
+                    
+        private void PopulateLanguageDropdown()
         {
             Language defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
             IEnumerable<Language> supportedLanguages = SpeechRecognizer.SupportedTopicLanguages;
@@ -147,7 +149,7 @@ namespace Dictation
                         RecognizerViewModel.RecognizerSpeech = new RecognizerSpeech(dispatcher, newLanguage);
                         languageTag = newLanguage.LanguageTag;
                     }
-                    catch (Exception exception)
+                    catch (ArgumentException exception)
                     {
                         var messageDialog = new MessageDialog(exception.Message, "Exception");
                         await messageDialog.ShowAsync();
@@ -197,7 +199,7 @@ namespace Dictation
                         
                         Frame.Navigate(this.GetType());
                     }
-                    catch (Exception exception)
+                    catch (ArgumentException exception)
                     {
                         var messageDialog = new MessageDialog(exception.Message, "Exception");
                         await messageDialog.ShowAsync();
@@ -264,27 +266,6 @@ namespace Dictation
             }
         }
                
-        public string ReadPdfFile(string fileName)
-        {
-            StringBuilder text = new StringBuilder();
-
-            if (File.Exists(fileName))
-            {
-                PdfReader pdfReader = new PdfReader(fileName);
-
-                for (int page = 1; page <= pdfReader.NumberOfPages; page++)
-                {
-                    ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-                    string currentText = PdfTextExtractor.GetTextFromPage(pdfReader, page, strategy);
-
-                    currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
-                    text.Append(currentText);
-                }
-                pdfReader.Close();
-            }
-            return text.ToString();
-        }
-
         private async void OpenFile_Click(object sender, RoutedEventArgs e)
         {
             ComboBoxItem comboBoxItem = ((ComboBoxItem)FormatSelection.SelectedItem);
