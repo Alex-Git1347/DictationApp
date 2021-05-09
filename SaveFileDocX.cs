@@ -43,23 +43,31 @@ namespace Dictation
                         outstream.Flush();
                     }
                 }
+                var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+                string mruToken = mru.Add(stFile, "Docx file");
             }
             await Windows.System.Launcher.LaunchFileAsync(stFile);
         }
 
-        public static async Task<string> OpenFileWord()
+        public static async Task<string> OpenFileWord(StorageFile openFile)
         {
-            if (openFile == null)
-            {
-                FileOpenPicker openPicker = new FileOpenPicker();
-                openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
-                openPicker.FileTypeFilter.Add(".docx");
-                StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
-                openFile = inputStorageFile;
-            }
+            //if (openFile == null)
+            //{
+            //    FileOpenPicker openPicker = new FileOpenPicker();
+            //    openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
+            //    openPicker.FileTypeFilter.Add(".docx");
+            //    StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
+            //    openFile = inputStorageFile;
+            //}
             WordDocument document = new WordDocument();
             await document.OpenAsync(openFile).ConfigureAwait(true);
             string docText = document.GetText();
+
+
+            //Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+
+            var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+            string mruToken = mru.Add(openFile, "profile pic");
             document.Dispose();
             return docText;
         }

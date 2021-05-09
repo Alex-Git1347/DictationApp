@@ -132,11 +132,20 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="recent.xaml.cs">
+      <DependentUpon>recent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RecognizerSpeech.cs" />
     <Compile Include="RecognizerSpeechViewModel.cs" />
+    <Compile Include="saveAs.xaml.cs">
+      <DependentUpon>saveAs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SaveFilePdf.cs" />
     <Compile Include="SaveFileDoc.cs" />
     <Compile Include="SaveFileDocX.cs" />
+    <Compile Include="settings.xaml.cs">
+      <DependentUpon>settings.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -161,6 +170,18 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="recent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="saveAs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

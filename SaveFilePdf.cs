@@ -58,6 +58,8 @@ namespace Dictation
                 {
                     bool success = await Windows.System.Launcher.LaunchFileAsync(stFile);
                 }
+                var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+                string mruToken = mru.Add(stFile, "Pdf file");
             }
         }
 
@@ -82,21 +84,20 @@ namespace Dictation
             loadedDocument.Dispose();
         }
 
-        public static async Task<string> Read()
+        public static async Task<string> Read(StorageFile openFile)
         {
+            string extractedText = "";
             if (openFile == null)
             {
-                var picker = new FileOpenPicker();
-                picker.FileTypeFilter.Add(".pdf");
-                StorageFile file = await picker.PickSingleFileAsync();
-                openFile = file;
-            }
             PdfLoadedDocument loadedDocument = new PdfLoadedDocument();
             await loadedDocument.OpenAsync(openFile).ConfigureAwait(true);
             PdfPageBase page = loadedDocument.Pages[0];
-            string extractedText = page.ExtractText();
+            extractedText = page.ExtractText();
             loadedDocument.Close(true);
             loadedDocument.Dispose();
+            var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+            string mruToken = mru.Add(openFile, "Docx file");
+            }
             return extractedText;
         }
 

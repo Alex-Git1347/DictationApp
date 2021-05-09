@@ -13,10 +13,30 @@
     <!--Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"-->
     <Grid Background="{ ThemeResource SystemChromeBlackMediumColor}" x:Name="mainGrid" >
         <RelativePanel VariableSizedWrapGrid.ColumnSpan="0"  BorderBrush="Violet" BorderThickness="3" >
+
             <StackPanel x:Name="panelButtons" Orientation="Vertical" RelativePanel.AlignHorizontalCenterWith="" Height="423" >
+                <Button Content="Menu" Background="Gray" Margin="50,10,10,10 ">
+                    <Button.Flyout>
+                        <MenuFlyout Placement="Bottom">
+                            <!--<MenuFlyoutSubItem Text="Файл">-->
+                                <MenuFlyoutItem Text="Сохранить как" Click="HyperlinkButton_Click" />
+                                <MenuFlyoutItem Text="Открыть" Click="OpenFile_Click"/>
+                            <!--</MenuFlyoutSubItem>-->
+                            <!--<MenuFlyoutItem Text="Правка" />-->
+                            <MenuFlyoutSeparator />
+                            <ToggleMenuFlyoutItem Text="Последние документы"  Click="Recent_Click"/>
+                            <ToggleMenuFlyoutItem Text="Настройки" />
+                            <MenuFlyoutItem Text="Выход" Click="Exit_Click" />
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
                 <Button x:Name="StartButton" x:Uid="StartRecordingButton" Content="Start recording" Width="200" Height="70" Margin="10,20,10,0" FontSize="20" Click="Start_Button_Click" />
                 <Button x:Name="StoptButton" x:Uid="StopRecordingButton" Content="Stop recording" Width="200" Height="70"  Margin="10" FontSize="18" Click="Stop_Button_Click"/>
                 <Button x:Name="ClearButton" x:Uid="ClearButton" Content="Clear Text" Width="200" Height="70" Margin="10" FontSize="18"  Click="Clear_Button_Click"/>
+                <!--<Button Width="86" Height="53" Click="Button_Click" />-->
+                <HyperlinkButton Content="Click to go to page 2"
+                 Click="HyperlinkButton_Click"
+                 HorizontalAlignment="Center"/>
             </StackPanel>
             <StackPanel x:Name="ComboBoxPanel" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="284" Width="177">
                 <StackPanel Margin="15">

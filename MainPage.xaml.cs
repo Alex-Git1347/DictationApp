@@ -27,18 +27,26 @@ namespace Dictation
     /// </summary>
     public sealed partial class MainPage 
     {
+        static public string token;
         private CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         private RecognizerSpeechViewModel RecognizerViewModel { get; set; }
         string languageTag = "";
         string CurrentFormatFile="";
         ShareOperation shareOperation = null;
-        
+        public StorageFile openFile;
+
         public MainPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
             RecognizerViewModel = new RecognizerSpeechViewModel(dispatcher);
             PopulateLanguageDropdown();
             PopulateLanguageInterfaceDropdown();
+        }
+
+        private void Toggle_Click()
+        {
+            //Splitter.IsPaneOpen = !Splitter.IsPaneOpen;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -76,17 +84,17 @@ namespace Dictation
                     {
                         case ".pdf": 
                             SaveFilePdf.openFile = f;
-                            textFile = await SaveFilePdf.Read().ConfigureAwait(true);
+                            textFile = await SaveFilePdf.Read(openFile).ConfigureAwait(true);
                             CurrentFormatFile ="PDF";
                             break;
                         case ".doc": 
                             SaveFileDoc.openFile = f;
-                            textFile = await SaveFileDoc.OpenFileWord().ConfigureAwait(true);
+                            textFile = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
                             CurrentFormatFile = "DOC";
                             break;
                         case ".docx": 
                             SaveFileDocX.openFile = f;
-                            textFile = await SaveFileDocX.OpenFileWord().ConfigureAwait(true);
+                            textFile = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
                             CurrentFormatFile = "DOCX";
                             break;
                     }
@@ -113,7 +121,15 @@ namespace Dictation
                 }
             }
         }
+        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(saveAs),dictationTextBox.Text);
+        }
 
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            App.Current.Exit(); // выход из приложения
+        }
         private void PopulateLanguageInterfaceDropdown()
         {
             IEnumerable<string> supportedLanguages = ApplicationLanguages.ManifestLanguages;
@@ -268,25 +284,40 @@ namespace Dictation
                
         private async void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            ComboBoxItem comboBoxItem = ((ComboBoxItem)FormatSelection.SelectedItem);
-            switch (comboBoxItem.Content.ToString())
+            FileOpenPicker openPicker = new FileOpenPicker();
+            openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
+            openPicker.FileTypeFilter.Add(".doc");
+            openPicker.FileTypeFilter.Add(".docx");
+            openPicker.FileTypeFilter.Add(".pdf");
+            StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
+            openFile = inputStorageFile;
+            try
             {
-                case "PDF":
-                    dictationTextBox.Text += await SaveFilePdf.Read().ConfigureAwait(true);
-                    CurrentFormatFile = "PDF";
-                    break;
+                openFile = inputStorageFile;
+                switch (openFile.FileType)
+                {
+                    case ".pdf":
+                        dictationTextBox.Text += await SaveFilePdf.Read(openFile).ConfigureAwait(true);
+                        CurrentFormatFile = "PDF";
+                        break;
 
-                case "DOCX":
-                    dictationTextBox.Text = await SaveFileDocX.OpenFileWord().ConfigureAwait(true);
-                    CurrentFormatFile = "DOCX";
-                    break;
+                    case ".docx":
+                        dictationTextBox.Text = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
+                        CurrentFormatFile = "DOCX";
+                        break;
 
-                case "DOC":
-                    dictationTextBox.Text = await SaveFileDoc.OpenFileWord().ConfigureAwait(true);
-                    CurrentFormatFile = "DOC";
-                    break;
+                    case ".doc":
+                        dictationTextBox.Text = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
+                        CurrentFormatFile = "DOC";
+                        break;
+                }
             }
-        }     
+            catch(NullReferenceException)
+            {
+                var message = new MessageDialog("No file selected or file is damaged");
+                await message.ShowAsync();
+            }
+        }
 
         private void SaveChangesCurrentFile_Click(object sender, RoutedEventArgs e)
         {
@@ -311,5 +342,28 @@ namespace Dictation
             dictationTextBox.Text = "";
             
         }
+
+        private async void Recent_Click(object sender, RoutedEventArgs e)
+        {
+            List<StorageFile> files = new List<StorageFile>();
+            var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+            
+            //StorageFile retrievedFile = await mru.GetFileAsync(token);
+
+            foreach (Windows.Storage.AccessCache.AccessListEntry entry in mru.Entries)
+            {
+                string mruToken = entry.Token;
+                string mruMetadata = entry.Metadata;
+                Windows.Storage.IStorageItem item = await mru.GetItemAsync(mruToken);
+                if (item is StorageFile)
+                {
+                    //StorageFile item = await mru.GetFileAsync(mruToken);
+                    files.Add((StorageFile)item);
+                }
+            }
+
+            this.Frame.Navigate(typeof(recent), files);
+        }
+
     }
 }
