@@ -34,7 +34,10 @@ namespace Dictation
             files = (List<StorageFile>)e.Parameter;
             foreach(var file in files)
             {
-                recentBlock.Text += file.Path+"\n";
+                //recentBlock.Text += file.Path+"\n";
+                Button button = new Button();
+                button.Content = file.Path + "\n";
+                recentList.Children.Add(button);
             }
             base.OnNavigatedTo(e);
         }

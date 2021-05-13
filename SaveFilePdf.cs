@@ -86,8 +86,9 @@ namespace Dictation
 
         public static async Task<string> Read(StorageFile openFile)
         {
+            SaveFilePdf.openFile = openFile;
             string extractedText = "";
-            if (openFile == null)
+            if (openFile != null)
             {
             PdfLoadedDocument loadedDocument = new PdfLoadedDocument();
             await loadedDocument.OpenAsync(openFile).ConfigureAwait(true);

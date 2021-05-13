@@ -59,6 +59,7 @@ namespace Dictation
             //    StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
             //    openFile = inputStorageFile;
             //}
+            SaveFileDoc.openFile = openFile;
             WordDocument document = new WordDocument();
             await document.OpenAsync(openFile).ConfigureAwait(true);
             string docText = document.GetText();

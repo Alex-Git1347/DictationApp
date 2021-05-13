@@ -16,6 +16,9 @@ using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.UI.Xaml.Navigation;
+using Windows.ApplicationModel.Background;
+using System.Linq;
+using Windows.Storage.Streams;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -42,7 +45,48 @@ namespace Dictation
             RecognizerViewModel = new RecognizerSpeechViewModel(dispatcher);
             PopulateLanguageDropdown();
             PopulateLanguageInterfaceDropdown();
+            HaveTempFile();
         }
+
+        private async void HaveTempFile()
+        {
+            StorageFile stFile;
+            StorageFolder localFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            try
+            {
+                stFile = await localFolder.GetFileAsync("temp.txt");
+            }
+            catch (FileNotFoundException)
+            {
+                stFile = null;
+            }
+            if (stFile != null)
+            {
+                ContentDialog noWifiDialog = new ContentDialog
+                {
+                    //Title = "No wifi connection",
+                    Content = "Хотите востановить несохраненный документ?",
+                    CloseButtonText = "No",
+                    PrimaryButtonText = "Yes"
+                };
+
+                ContentDialogResult result = await noWifiDialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    string text = await Windows.Storage.FileIO.ReadTextAsync(stFile);
+                    dictationTextBox.Text = text;
+                }
+                else
+                {
+                    stFile = await localFolder.GetFileAsync("temp.txt");
+                    await stFile.DeleteAsync();
+                }
+                //var messageDialog = new MessageDialog("Хотите востановить файл?");
+                //await messageDialog.ShowAsync();
+            }
+        }
+
 
         private void Toggle_Click()
         {
@@ -128,7 +172,7 @@ namespace Dictation
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            App.Current.Exit(); // выход из приложения
+            App.Current.Exit();
         }
         private void PopulateLanguageInterfaceDropdown()
         {
@@ -181,7 +225,6 @@ namespace Dictation
                 RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder.Append(dictationTextBox.Text);
             }
             RecognizerViewModel.RecognizerSpeech.StartRecording();
-            
         }
 
         private void Stop_Button_Click(object sender, RoutedEventArgs e)
@@ -294,6 +337,7 @@ namespace Dictation
             try
             {
                 openFile = inputStorageFile;
+                dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
                 switch (openFile.FileType)
                 {
                     case ".pdf":
@@ -319,30 +363,34 @@ namespace Dictation
             }
         }
 
-        private void SaveChangesCurrentFile_Click(object sender, RoutedEventArgs e)
+        private async void SaveChangesCurrentFile_Click(object sender, RoutedEventArgs e)
         {
             switch (CurrentFormatFile)
             {
                 case "PDF": 
                     SaveFilePdf.SaveChangesFile(dictationTextBox.Text);
-                    SaveFilePdf.openFile = null;
+                    //SaveFilePdf.openFile = null;
                     break;
 
                 case "DOCX": 
                     SaveFileDocX.SaveChangesFile(dictationTextBox.Text);
-                    SaveFileDocX.openFile = null;
+                    //SaveFileDocX.openFile = null;
                     break;
 
                 case "DOC": 
                     SaveFileDoc.SaveChangesFile(dictationTextBox.Text);
-                    SaveFileDoc.openFile = null;
+                    //SaveFileDoc.openFile = null;
                     break;
             }
             RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder.Clear();
-            dictationTextBox.Text = "";
-            
+            //dictationTextBox.Text = "";
+            StorageFile stFile;
+            StorageFolder localFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            stFile = await localFolder.GetFileAsync("temp");
+            await stFile.DeleteAsync();
+            //stFile = await localFolder.CreateFileAsync("temp.txt", CreationCollisionOption.ReplaceExisting);
         }
-
+        public string hello = "hello";
         private async void Recent_Click(object sender, RoutedEventArgs e)
         {
             List<StorageFile> files = new List<StorageFile>();
@@ -365,5 +413,106 @@ namespace Dictation
             this.Frame.Navigate(typeof(recent), files);
         }
 
+        string taskName = "AutoSaveFile";
+
+        
+        private async void Start_Click()
+        {
+            string text = dictationTextBox.Text;
+            int length = dictationTextBox.Text.Length;
+            int position=0;
+            if (length >= 2000)
+            {
+                while (position <= length)
+                {
+                    string partStr;
+                    int delta = length - position;
+                    if (delta < 2000)
+                    {
+                        partStr = text.Substring(position, delta);
+                    }
+                    else
+                    {
+                        partStr = text.Substring(position, 2000);
+                    }
+                    ApplicationData.Current.RoamingSettings.Values["dictationText" + position.ToString()] = partStr;
+                    position += 2000;
+                }
+            }
+            else
+            {
+                ApplicationData.Current.RoamingSettings.Values["dictationText"] = text;
+            }
+            var taskList = BackgroundTaskRegistration.AllTasks.Values;
+            var task = taskList.FirstOrDefault(i => i.Name == taskName);
+            if (task == null)
+            {
+                var taskBuilder = new BackgroundTaskBuilder();
+                taskBuilder.Name = taskName;
+                taskBuilder.TaskEntryPoint = typeof(BackgroundTasks.AutoSaveFile).ToString();
+
+                ApplicationTrigger appTrigger = new ApplicationTrigger();
+                taskBuilder.SetTrigger(appTrigger);
+
+                task = taskBuilder.Register();
+
+                //task.Progress += Task_Progress;
+                task.Completed += Task_Completed;
+
+                await appTrigger.RequestAsync();
+
+            }
+        }
+
+        private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            Stop();
+        }
+
+        private void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
+        {
+            var result = ApplicationData.Current.LocalSettings.Values["factorial"];
+            var progress = $"Результат: {result}";
+            UpdateUI(progress);
+            Stop();
+        }
+
+        private void Task_Progress(BackgroundTaskRegistration sender, BackgroundTaskProgressEventArgs args)
+        {
+            var progress = $"Progress: {args.Progress} %";
+            UpdateUI(progress);
+        }
+
+        private async void UpdateUI(string progress)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            () =>
+            {
+                //outputBlock.Text = progress;
+            });
+        }
+
+        private async void Stop()
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            () =>
+            {
+                var taskList = BackgroundTaskRegistration.AllTasks.Values;
+                var task = taskList.FirstOrDefault(i => i.Name == taskName);
+                if (task != null)
+                {
+                    task.Unregister(true);
+
+                    //stopButton.IsEnabled = false;
+                    //startButton.IsEnabled = true;
+                }
+            });
+        }
+
+
+        private void dictationTextBox_SelectionChanging(TextBox sender, TextBoxSelectionChangingEventArgs args)
+        {
+            Start_Click();
+        }
     }
 }

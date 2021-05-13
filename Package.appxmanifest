@@ -72,6 +72,11 @@
             <uap:DataFormat>Files</uap:DataFormat>
           </uap:ShareTarget>
         </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="BackgroundTasks.AutoSaveFile">
+          <BackgroundTasks>
+            <Task Type="general"/>
+          </BackgroundTasks>
+        </Extension>
       </Extensions>
     </Application>
   </Applications>
