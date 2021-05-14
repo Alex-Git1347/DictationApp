@@ -16,7 +16,7 @@
                         <SymbolIcon Symbol="Back" />
                     </StackPanel>
                 </Button>
-                <TextBlock Text="Save as" FontSize="24" Margin="10,0,0,0"></TextBlock>
+                <TextBlock Text="" FontSize="24" Margin="10,0,0,0" x:Uid="SaveAsTextBlock" ></TextBlock>
             </StackPanel>
             <StackPanel RelativePanel.Below="backPanel" Orientation="Horizontal" Margin="25,5">
                 <StackPanel Margin="25" BorderThickness="1" BorderBrush="AliceBlue">

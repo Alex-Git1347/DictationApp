@@ -9,6 +9,34 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock Text="It's settings page" FontSize="32"/>
+        <RelativePanel>
+            <StackPanel Margin="1" Name="backPanel" Orientation="Horizontal">
+                <Button Click="Back_Click">
+                    <StackPanel>
+                        <SymbolIcon Symbol="Back" />
+                    </StackPanel>
+                </Button>
+                <TextBlock Text="Settings" FontSize="24" Margin="10,0,0,0" x:Uid="SettingsTextBlock" ></TextBlock>
+            </StackPanel>
+            <StackPanel RelativePanel.Below="backPanel" Orientation="Horizontal" Margin="35,15">
+                <StackPanel x:Name="ComboBoxPanel" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="284" Width="177">
+                    <StackPanel Margin="15">
+                        <TextBlock Text="Language Recognition" Style="{StaticResource BaseTextBlockStyle}" x:Uid="LanguageRecognitionTextBlock"/>
+                        <ComboBox Margin="0,10,0,0" x:Name="cbLanguageSelection" SelectionChanged="RecordingLanguageSelection_SelectionChanged"/>
+                    </StackPanel>
+                    <StackPanel Margin="15">
+                        <TextBlock Text="Language Interface" Style="{StaticResource BaseTextBlockStyle}" x:Uid="LanguageInterfaceTextBlock"/>
+                        <ComboBox Margin="0,10,0,0" x:Name="LanguageInterface" SelectionChanged="LanguageInterface_SelectionChanged"/>
+                    </StackPanel>
+                    <StackPanel Margin="15">
+                        <TextBlock Text="Color Theme" Style="{StaticResource BaseTextBlockStyle}" x:Uid="ColorThemeTextBlock" />
+                        <ComboBox Margin="0,10,0,0" x:Name="ColorTheme" SelectionChanged="SelectedThemeApp" >
+                            <ComboBoxItem Content="Light" ></ComboBoxItem>
+                            <ComboBoxItem Content="Dark" ></ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </RelativePanel>
     </Grid>
 </Page>

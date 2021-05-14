@@ -38,14 +38,6 @@ namespace Dictation
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             textFile = e.Parameter.ToString();
-            //if (e.Parameter is string && !string.IsNullOrWhiteSpace((string)e.Parameter))
-            //{
-            //    greeting.Text = $"Hi, {e.Parameter.ToString()}";
-            //}
-            //else
-            //{
-            //    greeting.Text = "Hi!";
-            //}
             base.OnNavigatedTo(e);
         }
 
@@ -87,7 +79,7 @@ namespace Dictation
             }
         }
 
-        private void SavePDF_Click(object sender, RoutedEventArgs e)
+        private async void SavePDF_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -98,9 +90,10 @@ namespace Dictation
                     Syncfusion.Pdf.Graphics.PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
                     graphics.DrawString(textFile, font, PdfBrushes.Black, new System.Drawing.PointF(0, 0));
                     MemoryStream ms = new MemoryStream();
+                    await PDFdocument.SaveAsync(ms).ConfigureAwait(true);
+                    SaveFilePdf.Save(ms, "New PDF file.pdf");
                     PDFdocument.Save(ms);
                     PDFdocument.Close(true);
-                    SaveFilePdf.Save(ms, "New PDF file.pdf");
                     ms.Dispose();
                 }
             }

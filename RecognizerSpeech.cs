@@ -114,12 +114,14 @@ namespace Dictation
         {
             if (speechRecognizer.State == SpeechRecognizerState.Idle)
             {
+                await Task.Delay(1000).ConfigureAwait(true);
                 await speechRecognizer.ContinuousRecognitionSession.StartAsync();
             }
         }
 
         public async void StopRecording()
         {
+            await Task.Delay(1000).ConfigureAwait(true);
             if (speechRecognizer.State != SpeechRecognizerState.Idle)
             {
                 await speechRecognizer.ContinuousRecognitionSession.CancelAsync();

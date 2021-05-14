@@ -123,8 +123,47 @@
   <data name="ClearButton.Content" xml:space="preserve">
     <value>Effacer le texte de l'enregistrement</value>
   </data>
+  <data name="ColorThemeTextBlock.Text" xml:space="preserve">
+    <value>Thème de couleur</value>
+  </data>
   <data name="dictationTextBox.Text" xml:space="preserve">
     <value>Message texte</value>
+  </data>
+  <data name="ExitMenu.Text" xml:space="preserve">
+    <value>Sortie</value>
+  </data>
+  <data name="LanguageInterfaceTextBlock.Text" xml:space="preserve">
+    <value>Langue de l'interface</value>
+  </data>
+  <data name="LanguageRecognitionTextBlock.Text" xml:space="preserve">
+    <value>Langue d'enregistrement</value>
+  </data>
+  <data name="LanguageRecognitionTextBlock.Width" xml:space="preserve">
+    <value>140</value>
+  </data>
+  <data name="OpenFileMenu.Text" xml:space="preserve">
+    <value>Fichier ouvert</value>
+  </data>
+  <data name="RecentFilesMenu.Text" xml:space="preserve">
+    <value>Derniers documents</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Derniers documents</value>
+  </data>
+  <data name="SaveAsMenu.Text" xml:space="preserve">
+    <value>Enregistrer sous</value>
+  </data>
+  <data name="SaveAsTextBlock.Text" xml:space="preserve">
+    <value>Enregistrer sous</value>
+  </data>
+  <data name="SaveMenu.Text" xml:space="preserve">
+    <value>Garder</value>
+  </data>
+  <data name="SettingsMenu.Text" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="SettingsTextBlock.Text" xml:space="preserve">
+    <value>Paramètres</value>
   </data>
   <data name="StartRecordingButton.Content" xml:space="preserve">
     <value>Commencer l'enregistrement</value>

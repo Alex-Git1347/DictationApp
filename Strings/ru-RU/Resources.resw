@@ -123,8 +123,44 @@
   <data name="ClearButton.Content" xml:space="preserve">
     <value>Очистить текс записи</value>
   </data>
+  <data name="ColorThemeTextBlock.Text" xml:space="preserve">
+    <value>Цветовая тема</value>
+  </data>
   <data name="dictationTextBox.Text" xml:space="preserve">
     <value>Текст записи</value>
+  </data>
+  <data name="ExitMenu.Text" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="LanguageInterfaceTextBlock.Text" xml:space="preserve">
+    <value>Язык интерфейса</value>
+  </data>
+  <data name="LanguageRecognitionTextBlock.Text" xml:space="preserve">
+    <value>Язык записи</value>
+  </data>
+  <data name="OpenFileMenu.Text" xml:space="preserve">
+    <value>Открыть файл</value>
+  </data>
+  <data name="RecentFilesMenu.Text" xml:space="preserve">
+    <value>Последние файлы</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Последние файлы</value>
+  </data>
+  <data name="SaveAsMenu.Text" xml:space="preserve">
+    <value>Сохранить как</value>
+  </data>
+  <data name="SaveAsTextBlock.Text" xml:space="preserve">
+    <value>Сохранить как</value>
+  </data>
+  <data name="SaveMenu.Text" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="SettingsMenu.Text" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="SettingsTextBlock.Text" xml:space="preserve">
+    <value>Настройки</value>
   </data>
   <data name="StartRecordingButton.Content" xml:space="preserve">
     <value>Начало записи</value>

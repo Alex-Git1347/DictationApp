@@ -16,7 +16,7 @@
                         <SymbolIcon Symbol="Back" />
                     </StackPanel>
                 </Button>
-                <TextBlock Text="Recent files" FontSize="24" Margin="10,0,0,0"></TextBlock>
+                <TextBlock Text="Recent files" FontSize="24" Margin="10,0,0,0" x:Uid="RecentTextBlock" ></TextBlock>
             </StackPanel>
             <StackPanel x:Name="recentList" RelativePanel.Below="backPanel" BorderThickness="1" BorderBrush="Blue" Margin="15"/>
         </RelativePanel>

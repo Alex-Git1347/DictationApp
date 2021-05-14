@@ -123,8 +123,44 @@
   <data name="ClearButton.Content" xml:space="preserve">
     <value>Сlear Recording</value>
   </data>
+  <data name="ColorThemeTextBlock.Text" xml:space="preserve">
+    <value>Color theme</value>
+  </data>
   <data name="dictationTextBox.Text" xml:space="preserve">
     <value>Text Recording</value>
+  </data>
+  <data name="ExitMenu.Text" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="LanguageInterfaceTextBlock.Text" xml:space="preserve">
+    <value>Interface language</value>
+  </data>
+  <data name="LanguageRecognitionTextBlock.Text" xml:space="preserve">
+    <value>Recording language</value>
+  </data>
+  <data name="OpenFileMenu.Text" xml:space="preserve">
+    <value>Open file</value>
+  </data>
+  <data name="RecentFilesMenu.Text" xml:space="preserve">
+    <value>Recent files</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Recent files</value>
+  </data>
+  <data name="SaveAsMenu.Text" xml:space="preserve">
+    <value>Save as</value>
+  </data>
+  <data name="SaveAsTextBlock.Text" xml:space="preserve">
+    <value>Save as</value>
+  </data>
+  <data name="SaveMenu.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SettingsMenu.Text" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsTextBlock.Text" xml:space="preserve">
+    <value>Settings</value>
   </data>
   <data name="StartRecordingButton.Content" xml:space="preserve">
     <value>Start Recording</value>

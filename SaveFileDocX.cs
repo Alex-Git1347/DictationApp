@@ -18,14 +18,19 @@ namespace Dictation
         public static async void SaveWord(MemoryStream streams, string filename)
         {
             streams.Position = 0;
-            StorageFile stFile;
+            StorageFile stFile = null;
             if (!(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons")))
             {
-                FileSavePicker savePicker = new FileSavePicker();
-                savePicker.DefaultFileExtension = ".docx";
-                savePicker.SuggestedFileName = filename;
-                savePicker.FileTypeChoices.Add("Word Documents", new List<string>() { ".docx" });
-                stFile = await savePicker.PickSaveFileAsync();
+                try
+                {
+                    FileSavePicker savePicker = new FileSavePicker();
+                    savePicker.DefaultFileExtension = ".docx";
+                    savePicker.SuggestedFileName = filename;
+                    savePicker.FileTypeChoices.Add("Word Documents", new List<string>() { ".docx" });
+                    stFile = await savePicker.PickSaveFileAsync();
+                }
+                catch (NullReferenceException)
+                { }
             }
             else
             {
@@ -45,20 +50,12 @@ namespace Dictation
                 }
                 var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
                 string mruToken = mru.Add(stFile, "Docx file");
+                await Windows.System.Launcher.LaunchFileAsync(stFile);
             }
-            await Windows.System.Launcher.LaunchFileAsync(stFile);
         }
 
         public static async Task<string> OpenFileWord(StorageFile openFile)
         {
-            //if (openFile == null)
-            //{
-            //    FileOpenPicker openPicker = new FileOpenPicker();
-            //    openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
-            //    openPicker.FileTypeFilter.Add(".docx");
-            //    StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
-            //    openFile = inputStorageFile;
-            //}
             SaveFileDocX.openFile = openFile;
             WordDocument document = new WordDocument();
             await document.OpenAsync(openFile).ConfigureAwait(true);

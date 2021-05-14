@@ -31,14 +31,18 @@ namespace Dictation
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            files = (List<StorageFile>)e.Parameter;
-            foreach(var file in files)
+            try
             {
-                //recentBlock.Text += file.Path+"\n";
-                Button button = new Button();
-                button.Content = file.Path + "\n";
-                recentList.Children.Add(button);
+                files = (List<StorageFile>)e.Parameter;
+                foreach (var file in files)
+                {
+                    //recentBlock.Text += file.Path+"\n";
+                    Button button = new Button();
+                    button.Content = file.Path + "\n";
+                    recentList.Children.Add(button);
+                }
             }
+            catch (ArgumentNullException) { }
             base.OnNavigatedTo(e);
         }
 
