@@ -30,39 +30,11 @@
                 <Button x:Name="StoptButton" x:Uid="StopRecordingButton" Content="Stop recording" Width="200" Height="70"  Margin="10" FontSize="18" Click="Stop_Button_Click"/>
                 <Button x:Name="ClearButton" x:Uid="ClearButton" Content="Clear Text" Width="200" Height="70" Margin="10" FontSize="18"  Click="Clear_Button_Click"/>
             </StackPanel>
-            <!--<StackPanel x:Name="ComboBoxPanel" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="284" Width="177">
-                <StackPanel Margin="15">
-                    <TextBlock Text="Language Recognition"/>
-                    <ComboBox Margin="0,10,0,0" x:Name="cbLanguageSelection" SelectionChanged="cbLanguageSelection_SelectionChanged"/>
-                </StackPanel>
-                <StackPanel Margin="15">
-                    <TextBlock Text="Language Interface" Style="{StaticResource BaseTextBlockStyle}" />
-                    <ComboBox Margin="0,10,0,0" x:Name="LanguageInterface" SelectionChanged="LanguageInterface_SelectionChanged"/>
-                </StackPanel>
-                <StackPanel Margin="15">
-                    <TextBlock Text="Color Theme" Style="{StaticResource BaseTextBlockStyle}" />
-                    <ComboBox Margin="0,10,0,0" x:Name="ColorTheme" SelectionChanged="SelectedThemePage" >
-                        <ComboBoxItem Content="Light" ></ComboBoxItem>
-                        <ComboBoxItem Content="Dark" ></ComboBoxItem>
-                    </ComboBox>
-                </StackPanel>
-            </StackPanel>-->
             <StackPanel x:Name="dictationBlock" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="617" Width="754">
                 <Border BorderBrush="White"  RelativePanel.RightOf="ComboBoxPanel" BorderThickness="2" Margin="25" Height="566" Width="684">
                     <TextBox x:Name="dictationTextBox" Text="{x:Bind Path=RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder}" FontSize="16" FontFamily="Bahnschrift Light"  TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0"  />
                 </Border>
             </StackPanel>
-            <!--<StackPanel x:Name="Test" Orientation="Vertical" RelativePanel.RightOf="dictationBlock" Height="372" Width="199">
-                <TextBlock Text="Format" Margin="10" FontSize="20"/>
-                <ComboBox x:Name="FormatSelection" Margin="15,5,0,5">
-                    <ComboBoxItem Content="PDF" Tag=".pdf" ></ComboBoxItem>
-                    <ComboBoxItem Content="DOC" Tag=".doc" ></ComboBoxItem>
-                    <ComboBoxItem Content="DOCX" Tag=".docx"></ComboBoxItem>
-                </ComboBox>
-                <Button x:Name="test" Content="Save file" Margin="10" Height="61" Width="136" Click="SaveFile_Click"/>
-                <Button x:Name="test1" Content="Open File" Margin="10" Height="61" Width="136" Click="OpenFile_Click"/>
-                <Button x:Name="Save" Content="Save Changes" Margin="10" Height="61" Width="136" Click="SaveChangesCurrentFile_Click" />
-            </StackPanel> -->
         </RelativePanel>
     </Grid>
 </Page>

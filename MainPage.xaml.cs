@@ -37,6 +37,7 @@ namespace Dictation
         string CurrentFormatFile="";
         ShareOperation shareOperation = null;
         public StorageFile openFile;
+        public StorageFile recentFile;
         static public Language tmp;
         string taskName = "AutoSaveFile";
 
@@ -88,6 +89,20 @@ namespace Dictation
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            try
+            {
+                var entry = this.Frame.BackStack.LastOrDefault();
+                if (entry.SourcePageType.Name == "recent")
+                {
+                    recentFile = (StorageFile)e.Parameter;
+                    OpenFile_Click(null, null);
+                }
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+
             string textFile="";
             if (e != null)
             {
@@ -132,24 +147,7 @@ namespace Dictation
             }
         }
                     
-        //private void PopulateLanguageDropdown()
-        //{
-        //    Language defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
-        //    IEnumerable<Language> supportedLanguages = SpeechRecognizer.SupportedTopicLanguages;
-        //    foreach (Language lang in supportedLanguages)
-        //    {
-        //        ComboBoxItem item = new ComboBoxItem();
-        //        item.Tag = lang;
-        //        item.Content = lang.NativeName;
-
-        //        cbLanguageSelection.Items.Add(item);
-        //        if (lang.LanguageTag == defaultLanguage.LanguageTag)
-        //        {
-        //            item.IsSelected = true;
-        //            cbLanguageSelection.SelectedItem = item;
-        //        }
-        //    }
-        //}
+        
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(saveAs),dictationTextBox.Text);
@@ -159,27 +157,7 @@ namespace Dictation
         {
             App.Current.Exit();
         }
-        //private void PopulateLanguageInterfaceDropdown()
-        //{
-        //    IEnumerable<string> supportedLanguages = ApplicationLanguages.ManifestLanguages;
-        //    Language defaultLanguage = new Language(ApplicationLanguages.PrimaryLanguageOverride);
-
-        //    foreach (string lang in supportedLanguages)
-        //    {
-        //        Language temp = new Language(lang);
-        //        ComboBoxItem item = new ComboBoxItem();
-        //        item.Tag = temp.LanguageTag;
-        //        item.Content = temp.NativeName;
-
-        //        LanguageInterface.Items.Add(item);
-        //        if (temp.LanguageTag == defaultLanguage.LanguageTag)
-        //        {
-        //            item.IsSelected = true;
-        //            LanguageInterface.SelectedItem = item;
-        //        }
-        //    }
-        //}
-
+        
         private async void cbLanguageSelection_SelectionChanged()
         {
             Language newLanguage = SpeechRecognizer.SystemSpeechLanguage;
@@ -189,8 +167,6 @@ namespace Dictation
             }
             if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer != null)
             {
-                //ComboBoxItem item = (ComboBoxItem)(cbLanguageSelection.SelectedItem);
-                //(Language)item.Tag;
                 if (newLanguage != null)
                 {
                     if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer.CurrentLanguage != newLanguage)
@@ -233,90 +209,9 @@ namespace Dictation
             Bindings.Update();
         }
 
-        //private async void LanguageInterface_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    if (Frame != null)
-        //    {
-        //        ComboBoxItem item = (ComboBoxItem)(LanguageInterface.SelectedItem);
-        //        Language newLanguage =new Language(item.Tag.ToString());
-
-        //        if (ApplicationLanguages.PrimaryLanguageOverride != newLanguage.LanguageTag)
-        //        {
-        //            try
-        //            {
-        //                Frame.CacheSize = 0;
-        //                ApplicationLanguages.PrimaryLanguageOverride = newLanguage.LanguageTag;
-        //                ResourceContext.GetForCurrentView().Reset();
-        //                ResourceContext.GetForViewIndependentUse().Reset();
-        //                LanguageInterface.UpdateLayout();
-                        
-        //                Frame.Navigate(this.GetType());
-        //            }
-        //            catch (ArgumentException exception)
-        //            {
-        //                var messageDialog = new MessageDialog(exception.Message, "Exception");
-        //                await messageDialog.ShowAsync();
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void SelectedThemePage(object sender, RoutedEventArgs e)
-        //{
-        //    ComboBoxItem item = (ComboBoxItem)(ColorTheme.SelectedItem);
-        //    if (item.Content.ToString() == "Light")
-        //    {
-        //        mainPage.RequestedTheme = ElementTheme.Light;
-        //    }
-        //    else if (item.Content.ToString() == "Dark")
-        //    {
-        //        mainPage.RequestedTheme = ElementTheme.Dark;
-        //    }
-
-        //}
-                
         private  void SaveFile_Click(object sender, RoutedEventArgs e)
         {
-            //ComboBoxItem comboBoxItem = ((ComboBoxItem)FormatSelection.SelectedItem);
-            //switch(comboBoxItem.Content.ToString())
-            //{
-            //    case "PDF":
-            //        using (Syncfusion.Pdf.PdfDocument PDFdocument = new Syncfusion.Pdf.PdfDocument())
-            //        {
-            //            Syncfusion.Pdf.PdfPage page = PDFdocument.Pages.Add();
-            //            PdfGraphics graphics = page.Graphics;
-            //            Syncfusion.Pdf.Graphics.PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
-            //            graphics.DrawString(dictationTextBox.Text, font, PdfBrushes.Black, new System.Drawing.PointF(0, 0));
-            //            MemoryStream ms = new MemoryStream();
-            //            PDFdocument.Save(ms);
-            //            PDFdocument.Close(true);
-            //            SaveFilePdf.Save(ms, "New PDF file.pdf");
-            //            ms.Dispose();
-            //        }
-            //        break;
-
-            //    case "DOC":
-            //        WordDocument doc = new WordDocument();
-            //        doc.EnsureMinimal();
-            //        doc.LastParagraph.AppendText(dictationTextBox.Text);
-            //        MemoryStream stream = new MemoryStream();
-            //        await doc.SaveAsync(stream, FormatType.Doc).ConfigureAwait(true);
-            //        doc.Close();
-            //        SaveFileDoc.SaveWord(stream, "Result.doc");
-            //        stream.Dispose();
-            //        break;
-
-            //    case "DOCX":
-            //        WordDocument docx = new WordDocument();
-            //        docx.EnsureMinimal();
-            //        docx.LastParagraph.AppendText(dictationTextBox.Text);
-            //        MemoryStream streamDocx = new MemoryStream();
-            //        await docx.SaveAsync(streamDocx, FormatType.Docx).ConfigureAwait(true);
-            //        docx.Close();
-            //        SaveFileDocX.SaveWord(streamDocx, "Result.docx");
-            //        streamDocx.Dispose();
-            //        break;
-            //}
+            
         }
                
         private async void OpenFile_Click(object sender, RoutedEventArgs e)
@@ -326,11 +221,17 @@ namespace Dictation
             openPicker.FileTypeFilter.Add(".doc");
             openPicker.FileTypeFilter.Add(".docx");
             openPicker.FileTypeFilter.Add(".pdf");
-            StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
-            openFile = inputStorageFile;
             try
             {
-                openFile = inputStorageFile;
+                if (recentFile != null) 
+                {
+                    openFile = recentFile;
+                }
+                else
+                {
+                    StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
+                    openFile = inputStorageFile;
+                }
                 dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
                 switch (openFile.FileType)
                 {

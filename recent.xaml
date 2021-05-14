@@ -11,7 +11,7 @@
     <Grid>
         <RelativePanel x:Name="recentPanel">
             <StackPanel Name="backPanel" Orientation="Horizontal" Margin="0,0,10,10">
-                <Button Click="backToMain_Click">
+                <Button Click="BackToMain_Click">
                     <StackPanel>
                         <SymbolIcon Symbol="Back" />
                     </StackPanel>

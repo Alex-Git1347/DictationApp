@@ -36,9 +36,9 @@ namespace Dictation
                 files = (List<StorageFile>)e.Parameter;
                 foreach (var file in files)
                 {
-                    //recentBlock.Text += file.Path+"\n";
                     Button button = new Button();
-                    button.Content = file.Path + "\n";
+                    button.Click += OpenFile_Click;
+                    button.Content = file.Path;
                     recentList.Children.Add(button);
                 }
             }
@@ -46,7 +46,14 @@ namespace Dictation
             base.OnNavigatedTo(e);
         }
 
-        private void backToMain_Click(object sender, RoutedEventArgs e)
+        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            StorageFile file = files.FirstOrDefault(f => f.Path.ToString() == button.Content.ToString());
+            this.Frame.Navigate(typeof(MainPage),file);
+        }
+
+        private void BackToMain_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(MainPage));
         }
