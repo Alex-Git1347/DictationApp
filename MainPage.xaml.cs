@@ -354,7 +354,7 @@ namespace Dictation
             {
                 var taskBuilder = new BackgroundTaskBuilder();
                 taskBuilder.Name = taskName;
-                taskBuilder.TaskEntryPoint = typeof(BackgroundTasks.AutoSaveFile).ToString();
+                taskBuilder.TaskEntryPoint = typeof(BackgroundTask.AutoSaveFile).ToString();
 
                 ApplicationTrigger appTrigger = new ApplicationTrigger();
                 taskBuilder.SetTrigger(appTrigger);
