@@ -77,6 +77,16 @@
             <Task Type="general"/>
           </BackgroundTasks>
         </Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="doc">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.doc</uap:FileType>
+              <uap:FileType>.pdf</uap:FileType>
+              <uap:FileType>.docx</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:DisplayName>doc file</uap:DisplayName>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

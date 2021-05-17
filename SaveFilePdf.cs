@@ -86,7 +86,7 @@ namespace Dictation
             loadedDocument.Close(true);
             loadedDocument.Dispose();
             var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
-            string mruToken = mru.Add(openFile, "Docx file");
+            string mruToken = mru.Add(openFile, "Pdf file");
             }
             return extractedText;
         }

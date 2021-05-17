@@ -18,7 +18,7 @@
                         <MenuFlyout Placement="Bottom">
                             <MenuFlyoutItem Text="Сохранить" Click="SaveChangesCurrentFile_Click" x:Uid="SaveMenu" />
                             <MenuFlyoutItem Text="Сохранить как" Click="SaveAs_Click" x:Uid="SaveAsMenu" />
-                            <MenuFlyoutItem Text="Открыть файл" Click="OpenFile_Click" x:Uid="OpenFileMenu" />
+                            <MenuFlyoutItem Text="Открыть файл" Click="OpenFileDialog_Click" x:Uid="OpenFileMenu" />
                             <MenuFlyoutSeparator />
                             <ToggleMenuFlyoutItem Text="Последние документы"  Click="Recent_Click" x:Uid="RecentFilesMenu"/>
                             <ToggleMenuFlyoutItem Text="Настройки" Click="Settings_Click" x:Uid="SettingsMenu"/>

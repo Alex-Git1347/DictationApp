@@ -19,6 +19,8 @@ using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Background;
 using System.Linq;
 using Windows.Storage.Streams;
+using Windows.ApplicationModel.Activation;
+
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -87,15 +89,31 @@ namespace Dictation
             }
         }
 
+        
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            try
+            {
+                if (e.Parameter is StorageFile)
+                {
+                    StorageFile f = (StorageFile)e.Parameter;
+                    openFile = f;
+                    Open_openFile();
+                }
+
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+
             try
             {
                 var entry = this.Frame.BackStack.LastOrDefault();
                 if (entry.SourcePageType.Name == "recent")
                 {
                     recentFile = (StorageFile)e.Parameter;
-                    OpenFile_Click(null, null);
+                    OpenFileDialog_Click(null, null);
                 }
             }
             catch (NullReferenceException)
@@ -103,6 +121,7 @@ namespace Dictation
 
             }
 
+            
             string textFile="";
             if (e != null)
             {
@@ -128,16 +147,19 @@ namespace Dictation
                     {
                         case ".pdf": 
                             SaveFilePdf.openFile = f;
+                            openFile = f;
                             textFile = await SaveFilePdf.Read(openFile).ConfigureAwait(true);
                             CurrentFormatFile ="PDF";
                             break;
                         case ".doc": 
                             SaveFileDoc.openFile = f;
+                            openFile = f;
                             textFile = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
                             CurrentFormatFile = "DOC";
                             break;
                         case ".docx": 
                             SaveFileDocX.openFile = f;
+                            openFile = f;
                             textFile = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
                             CurrentFormatFile = "DOCX";
                             break;
@@ -214,7 +236,36 @@ namespace Dictation
             
         }
                
-        private async void OpenFile_Click(object sender, RoutedEventArgs e)
+        private async void OpenExistingFile()
+        {
+
+            //openFile = openingFile;
+            //dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
+            //string temp = "";
+            //switch (openFile.FileType)
+            //{
+            //    case ".pdf":
+            //        temp = await SaveFilePdf.Read(openFile).ConfigureAwait(true);
+            //        CurrentFormatFile = "PDF";
+            //        break;
+
+            //    case ".docx":
+            //        temp = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
+            //        CurrentFormatFile = "DOCX";
+            //        break;
+
+            //    case ".doc":
+            //        temp += await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
+            //        CurrentFormatFile = "DOC";
+            //        break;
+            //}
+            //dictationTextBox.Text = temp;
+            //dictationTextBox.UpdateLayout();
+            //Bindings.Update();
+            //test.Text = temp;
+        }
+
+        private async void OpenFileDialog_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker openPicker = new FileOpenPicker();
             openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
@@ -232,29 +283,53 @@ namespace Dictation
                     StorageFile inputStorageFile = await openPicker.PickSingleFileAsync();
                     openFile = inputStorageFile;
                 }
-                dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
-                switch (openFile.FileType)
-                {
-                    case ".pdf":
-                        dictationTextBox.Text += await SaveFilePdf.Read(openFile).ConfigureAwait(true);
-                        CurrentFormatFile = "PDF";
-                        break;
 
-                    case ".docx":
-                        dictationTextBox.Text = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
-                        CurrentFormatFile = "DOCX";
-                        break;
+                Open_openFile();
+                //dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
+                //switch (openFile.FileType)
+                //{
+                //    case ".pdf":
+                //        dictationTextBox.Text += await SaveFilePdf.Read(openFile).ConfigureAwait(true);
+                //        CurrentFormatFile = "PDF";
+                //        break;
 
-                    case ".doc":
-                        dictationTextBox.Text = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
-                        CurrentFormatFile = "DOC";
-                        break;
-                }
+                //    case ".docx":
+                //        dictationTextBox.Text = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
+                //        CurrentFormatFile = "DOCX";
+                //        break;
+
+                //    case ".doc":
+                //        dictationTextBox.Text = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
+                //        CurrentFormatFile = "DOC";
+                //        break;
+                //}
             }
             catch (NullReferenceException)
             {
                 var message = new MessageDialog("No file selected or file is damaged");
                 await message.ShowAsync();
+            }
+        }
+
+        private async void Open_openFile()
+        {
+            dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
+            switch (openFile.FileType)
+            {
+                case ".pdf":
+                    dictationTextBox.Text = await SaveFilePdf.Read(openFile).ConfigureAwait(true);
+                    CurrentFormatFile = "PDF";
+                    break;
+
+                case ".docx":
+                    dictationTextBox.Text = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
+                    CurrentFormatFile = "DOCX";
+                    break;
+
+                case ".doc":
+                    dictationTextBox.Text = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
+                    CurrentFormatFile = "DOC";
+                    break;
             }
         }
 

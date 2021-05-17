@@ -9,6 +9,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -24,6 +25,8 @@ namespace Dictation
     /// </summary>
     sealed partial class App : Application
     {
+
+        private StorageFile file;
         public ShareOperation shareOperation;
         /// <summary>
         /// Инициализирует одноэлементный объект приложения. Это первая выполняемая строка разрабатываемого
@@ -33,6 +36,7 @@ namespace Dictation
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            //DefaultLaunch();
         }
 
         /// <summary>
@@ -104,6 +108,43 @@ namespace Dictation
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+        }
+
+        async void DefaultLaunch()
+        {
+            // Path to the file in the app package to launch
+            //string imageFile = @"images\test.contoso";
+
+            // Get the image file from the package's image directory
+            var currentFile = file; //await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(imageFile);
+
+            if (file != null)
+            {
+                var options = new Windows.System.LauncherOptions();
+                options.DisplayApplicationPicker = true;
+                bool success = await Windows.System.Launcher.LaunchFileAsync(file,options);
+                if (success)
+                {
+                    // File launched
+                    var rootFrame = new Frame();
+                    rootFrame.Navigate(typeof(MainPage), currentFile);
+                    Window.Current.Content = rootFrame;
+                    Window.Current.Activate();
+                }
+                else
+                {
+                    // File launch failed
+                }
+            }
+            else
+            {
+                // Could not find file
+            }
+        }
+        protected override void OnFileActivated(FileActivatedEventArgs args)
+        {
+            file = (StorageFile)args.Files[0];
+            DefaultLaunch();
         }
 
         /// <summary>
