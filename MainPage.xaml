@@ -12,8 +12,10 @@
     >
     <Grid Background="{ ThemeResource SystemChromeBlackMediumColor}" x:Name="mainGrid" >
         <RelativePanel VariableSizedWrapGrid.ColumnSpan="0"  BorderBrush="Violet" BorderThickness="3" >
-            <StackPanel x:Name="panelButtons" Orientation="Vertical" RelativePanel.AlignHorizontalCenterWith="" Height="423" >
-                <Button Content="Menu" Background="Gray" Margin="50,10,10,10 ">
+            <Canvas x:Name="PrintCanvas" Opacity="0"/>
+            <StackPanel x:Name="panelMenu" VerticalAlignment="Bottom" >
+                <Button Margin="10">
+                    <SymbolIcon Symbol="Home"/>
                     <Button.Flyout>
                         <MenuFlyout Placement="Bottom">
                             <MenuFlyoutItem Text="Сохранить" Click="SaveChangesCurrentFile_Click" x:Uid="SaveMenu" />
@@ -26,6 +28,14 @@
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
+                <Button x:Name="InvokePrintingButton" Click="OnPrintButtonClick" Margin="10">
+                    <StackPanel>
+                        <SymbolIcon Symbol="Print"/>
+                    </StackPanel>
+                </Button>
+                <!--<Button x:Name="InvokePrintingButton" Content="Print" Click="OnPrintButtonClick"/>-->
+            </StackPanel>
+            <StackPanel x:Name="panelButtons" Orientation="Vertical" RelativePanel.RightOf="panelMenu" RelativePanel.AlignHorizontalCenterWith="" Height="423" >
                 <Button x:Name="StartButton" x:Uid="StartRecordingButton" Content="Start recording" Width="200" Height="70" Margin="10,20,10,0" FontSize="20" Click="Start_Button_Click" />
                 <Button x:Name="StoptButton" x:Uid="StopRecordingButton" Content="Stop recording" Width="200" Height="70"  Margin="10" FontSize="18" Click="Stop_Button_Click"/>
                 <Button x:Name="ClearButton" x:Uid="ClearButton" Content="Clear Text" Width="200" Height="70" Margin="10" FontSize="18"  Click="Clear_Button_Click"/>

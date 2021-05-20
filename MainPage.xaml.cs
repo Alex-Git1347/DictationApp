@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Windows.ApplicationModel.Resources.Core;
 using Windows.Globalization;
 using Windows.Media.SpeechRecognition;
 using Windows.Storage;
@@ -11,15 +9,11 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Syncfusion.Pdf.Graphics;
-using Syncfusion.DocIO;
-using Syncfusion.DocIO.DLS;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Background;
 using System.Linq;
-using Windows.Storage.Streams;
-using Windows.ApplicationModel.Activation;
+using Windows.Graphics.Printing;
 
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
@@ -41,6 +35,7 @@ namespace Dictation
         public StorageFile openFile;
         public StorageFile recentFile;
         static public Language tmp;
+        private PrintHelper printHelper;
         string taskName = "AutoSaveFile";
 
         public MainPage()
@@ -48,9 +43,29 @@ namespace Dictation
             this.InitializeComponent();
             this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
             RecognizerViewModel = new RecognizerSpeechViewModel(dispatcher);
-            //PopulateLanguageDropdown();
-            //PopulateLanguageInterfaceDropdown();
             HaveTempFile();
+        }
+
+        private async void OnPrintButtonClick(object sender, RoutedEventArgs e)
+        {
+            string tempText = dictationTextBox.Text;
+            try
+            {
+                printHelper.PreparePrintContent(new PageToPrint(tempText));
+            }
+            catch (Exception arg)
+            {
+
+            }
+            await printHelper.ShowPrintUIAsync().ConfigureAwait(false);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            if (printHelper != null)
+            {
+                printHelper.UnregisterForPrinting();
+            }
         }
 
         private async void HaveTempFile()
@@ -88,8 +103,7 @@ namespace Dictation
                 }
             }
         }
-
-        
+                
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             try
@@ -100,7 +114,6 @@ namespace Dictation
                     openFile = f;
                     Open_openFile();
                 }
-
             }
             catch (NullReferenceException)
             {
@@ -131,8 +144,7 @@ namespace Dictation
                 }
                 catch (InvalidCastException)
                 {
-                    //MessageDialog message = new MessageDialog(arg.ToString());
-                    //await message.ShowAsync();
+
                 }
             }
             
@@ -167,6 +179,17 @@ namespace Dictation
                 }
                 dictationTextBox.Text = textFile;
             }
+
+            if (PrintManager.IsSupported())
+            {
+                
+            }
+            else
+            {
+                InvokePrintingButton.Visibility = Visibility.Collapsed;
+            }
+            printHelper = new PrintHelper(this);
+            printHelper.RegisterForPrinting();
         }
                     
         
@@ -230,41 +253,7 @@ namespace Dictation
             RecognizerViewModel.RecognizerSpeech.ClearRecordingText();
             Bindings.Update();
         }
-
-        private  void SaveFile_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-               
-        private async void OpenExistingFile()
-        {
-
-            //openFile = openingFile;
-            //dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
-            //string temp = "";
-            //switch (openFile.FileType)
-            //{
-            //    case ".pdf":
-            //        temp = await SaveFilePdf.Read(openFile).ConfigureAwait(true);
-            //        CurrentFormatFile = "PDF";
-            //        break;
-
-            //    case ".docx":
-            //        temp = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
-            //        CurrentFormatFile = "DOCX";
-            //        break;
-
-            //    case ".doc":
-            //        temp += await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
-            //        CurrentFormatFile = "DOC";
-            //        break;
-            //}
-            //dictationTextBox.Text = temp;
-            //dictationTextBox.UpdateLayout();
-            //Bindings.Update();
-            //test.Text = temp;
-        }
-
+                        
         private async void OpenFileDialog_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker openPicker = new FileOpenPicker();
@@ -285,24 +274,6 @@ namespace Dictation
                 }
 
                 Open_openFile();
-                //dictationTextBox.SelectionChanging += dictationTextBox_SelectionChanging;
-                //switch (openFile.FileType)
-                //{
-                //    case ".pdf":
-                //        dictationTextBox.Text += await SaveFilePdf.Read(openFile).ConfigureAwait(true);
-                //        CurrentFormatFile = "PDF";
-                //        break;
-
-                //    case ".docx":
-                //        dictationTextBox.Text = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
-                //        CurrentFormatFile = "DOCX";
-                //        break;
-
-                //    case ".doc":
-                //        dictationTextBox.Text = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
-                //        CurrentFormatFile = "DOC";
-                //        break;
-                //}
             }
             catch (NullReferenceException)
             {
