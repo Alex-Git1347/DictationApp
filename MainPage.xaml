@@ -12,9 +12,19 @@
     >
     <Grid Background="{ ThemeResource SystemChromeBlackMediumColor}" x:Name="mainGrid" >
         <RelativePanel VariableSizedWrapGrid.ColumnSpan="0"  BorderBrush="Violet" BorderThickness="3" >
+            <!--<Popup VerticalOffset="10" HorizontalOffset="200" x:Name="StandardPopup" Height="541" Width="231">
+                <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" 
+                Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
+                BorderThickness="2" Width="200" Height="200">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Simple Popup" FontSize="24.667" HorizontalAlignment="Center"/>
+                        <Button Content="Close" Click="ClosePopupClicked" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Popup>-->
             <Canvas x:Name="PrintCanvas" Opacity="0"/>
-            <StackPanel x:Name="panelMenu" VerticalAlignment="Bottom" >
-                <Button Margin="10">
+            <StackPanel x:Name="panelMenu" Height="567" Width="258" >
+                <!--<Button Margin="10">
                     <SymbolIcon Symbol="Home"/>
                     <Button.Flyout>
                         <MenuFlyout Placement="Bottom">
@@ -27,12 +37,41 @@
                             <MenuFlyoutItem Text="Выход" Click="Exit_Click" x:Uid="ExitMenu" />
                         </MenuFlyout>
                     </Button.Flyout>
-                </Button>
-                <Button x:Name="InvokePrintingButton" Click="OnPrintButtonClick" Margin="10">
+                </Button>-->
+                <RelativePanel>
+                    <Button x:Name="HamburgerButton" RelativePanel.AlignLeftWithPanel="True"
+                    FontFamily="Segoe MDL2 Assets" FontSize="36"
+                    Content="&#xE700;" Click="HamburgerButton_Click"/>
+                    <TextBlock Name="TitleTextBlock" RelativePanel.RightOf="HamburgerButton"
+                       FontSize="28" FontWeight="Bold" Margin="30 5 0 0" />
+                </RelativePanel>
+                <SplitView Name="mySplitView" Grid.Row="1" OpenPaneLength="200">
+                    <SplitView.Pane>
+                        <ListBox SelectionMode="Single" SelectionChanged="MenuBox_SelectionChanged">
+                            <ListBoxItem Name="SaveAs">
+                                <TextBlock FontSize="24" Text="Save as" />
+                            </ListBoxItem>
+                            <ListBoxItem Name="recentFiles">
+                                <TextBlock FontSize="24" Text="Recent" />
+                            </ListBoxItem>
+                            <ListBoxItem Name="settings">
+                                <TextBlock FontSize="24" Text="Settings" />
+                            </ListBoxItem>
+                            <ListBoxItem Name="print">
+                                <TextBlock FontSize="24" Text="Print" />
+                            </ListBoxItem>
+                        </ListBox>
+                    </SplitView.Pane>
+                    <SplitView.Content>
+                        <Frame Name="myFrame" />
+                    </SplitView.Content>
+                </SplitView>
+
+                <!--<Button x:Name="InvokePrintingButton" Click="OnPrintButtonClick" Margin="10">
                     <StackPanel>
                         <SymbolIcon Symbol="Print"/>
                     </StackPanel>
-                </Button>
+                </Button>-->
                 <!--<Button x:Name="InvokePrintingButton" Content="Print" Click="OnPrintButtonClick"/>-->
             </StackPanel>
             <StackPanel x:Name="panelButtons" Orientation="Vertical" RelativePanel.RightOf="panelMenu" RelativePanel.AlignHorizontalCenterWith="" Height="423" >

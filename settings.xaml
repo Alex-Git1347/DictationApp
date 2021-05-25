@@ -11,15 +11,10 @@
     <Grid>
         <RelativePanel>
             <StackPanel Margin="1" Name="backPanel" Orientation="Horizontal">
-                <Button Click="Back_Click">
-                    <StackPanel>
-                        <SymbolIcon Symbol="Back" />
-                    </StackPanel>
-                </Button>
-                <TextBlock Text="Settings" FontSize="24" Margin="10,0,0,0" x:Uid="SettingsTextBlock" ></TextBlock>
             </StackPanel>
             <StackPanel RelativePanel.Below="backPanel" Orientation="Horizontal" Margin="35,15">
-                <StackPanel x:Name="ComboBoxPanel" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="284" Width="177">
+                <StackPanel x:Name="ComboBoxPanel" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="361" Width="177">
+                    <TextBlock Text="Settings" FontSize="24" Margin="15,0,0,0" x:Uid="SettingsTextBlock" ></TextBlock>
                     <StackPanel Margin="15">
                         <TextBlock Text="Language Recognition" Style="{StaticResource BaseTextBlockStyle}" x:Uid="LanguageRecognitionTextBlock"/>
                         <ComboBox Margin="0,10,0,0" x:Name="cbLanguageSelection" SelectionChanged="RecordingLanguageSelection_SelectionChanged"/>

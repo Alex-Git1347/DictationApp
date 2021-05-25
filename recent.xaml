@@ -11,11 +11,11 @@
     <Grid>
         <RelativePanel x:Name="recentPanel">
             <StackPanel Name="backPanel" Orientation="Horizontal" Margin="0,0,10,10">
-                <Button Click="BackToMain_Click">
+                <!--<Button Click="BackToMain_Click">
                     <StackPanel>
                         <SymbolIcon Symbol="Back" />
                     </StackPanel>
-                </Button>
+                </Button>-->
                 <TextBlock Text="Recent files" FontSize="24" Margin="10,0,0,0" x:Uid="RecentTextBlock" ></TextBlock>
             </StackPanel>
             <StackPanel x:Name="recentList" RelativePanel.Below="backPanel" BorderThickness="1" BorderBrush="Blue" Margin="15"/>

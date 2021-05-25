@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -24,9 +25,12 @@ namespace Dictation
     public sealed partial class recent : Page
     {
         private List<StorageFile> files;
+        AppWindow appWindow;
+        static public StorageFile openFile;
         public recent()
         {
             this.InitializeComponent();
+            appWindow = MainPage.appWindow;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -46,11 +50,13 @@ namespace Dictation
             base.OnNavigatedTo(e);
         }
 
-        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        private async void OpenFile_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             StorageFile file = files.FirstOrDefault(f => f.Path.ToString() == button.Content.ToString());
-            this.Frame.Navigate(typeof(MainPage),file);
+            openFile = file;
+            await appWindow.CloseAsync();
+            
         }
 
         private void BackToMain_Click(object sender, RoutedEventArgs e)

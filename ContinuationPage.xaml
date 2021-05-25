@@ -16,11 +16,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-
         <RichTextBlockOverflow x:Name="ContinuationPageLinkedContainer" Grid.Row="0" Grid.Column="0" />
         <StackPanel x:Name="Footer" Grid.Row="4" Grid.Column="0" VerticalAlignment="Top" Visibility="Collapsed">
             <RichTextBlock Foreground="Black" FontSize="16" TextAlignment="Left" FontFamily="Segoe UI">
-                <!--<Paragraph>Copyright © Dictation 2021</Paragraph>-->
+                <Paragraph>Copyright © Dictation 2021</Paragraph>
             </RichTextBlock>
         </StackPanel>
     </Grid>

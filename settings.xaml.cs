@@ -100,12 +100,12 @@ namespace Dictation
                     {
                         Frame.CacheSize = 0;
                         ApplicationLanguages.PrimaryLanguageOverride = newLanguage.LanguageTag;
-                        ResourceContext.GetForCurrentView().Reset();
-                        ResourceContext.GetForViewIndependentUse().Reset();
+                        //ResourceContext.GetForCurrentView().Reset();
+                        //ResourceContext.GetForViewIndependentUse().Reset();
                         LanguageInterface.UpdateLayout();
 
-                        Frame.Navigate(this.GetType());
-                        this.Frame.Navigate(typeof(settings));
+                        //Frame.Navigate(this.GetType());
+                        //this.Frame.Navigate(typeof(settings));
                     }
                     catch (ArgumentException exception)
                     {
@@ -121,13 +121,18 @@ namespace Dictation
             ComboBoxItem item = (ComboBoxItem)(ColorTheme.SelectedItem);
             if (item.Content.ToString() == "Light")
             {
+                //App.Current.RequestedTheme = ApplicationTheme.Light;
+                //Application.Current.RequestedTheme = ApplicationTheme.Light;
                 if (Window.Current.Content is FrameworkElement frameworkElement)
                 {
                     frameworkElement.RequestedTheme = ElementTheme.Light;
+
                 }
             }
             else if (item.Content.ToString() == "Dark")
             {
+                //Application.Current.RequestedTheme = ApplicationTheme.Light;
+                //App.Current.RequestedTheme = ApplicationTheme.Dark;
                 if (Window.Current.Content is FrameworkElement frameworkElement)
                 {
                     frameworkElement.RequestedTheme = ElementTheme.Dark;

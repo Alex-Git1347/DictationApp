@@ -165,8 +165,9 @@ namespace Dictation
         /// <param name="e">Сведения о запросе приостановки.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Сохранить состояние приложения и остановить все фоновые операции
+            SuspendingDeferral deferral = e.SuspendingOperation.GetDeferral();
+            //await SuspensionManager.SaveAsync();
+            //OnLaunched(null);
             deferral.Complete();
         }
     }

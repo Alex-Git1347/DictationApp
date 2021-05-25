@@ -11,14 +11,9 @@
     <Grid>
         <RelativePanel>
             <StackPanel Margin="1" Name="backPanel" Orientation="Horizontal">
-                <Button Click="HyperlinkButton_Click">
-                    <StackPanel>
-                        <SymbolIcon Symbol="Back" />
-                    </StackPanel>
-                </Button>
-                <TextBlock Text="" FontSize="24" Margin="10,0,0,0" x:Uid="SaveAsTextBlock" ></TextBlock>
+                <TextBlock Text="Save as" FontSize="24" x:Uid="SaveAsTextBlock" Width="178" Height="41" Margin="45,0,0,0"/>
             </StackPanel>
-            <StackPanel RelativePanel.Below="backPanel" Orientation="Horizontal" Margin="25,5">
+            <StackPanel RelativePanel.Below="backPanel" Orientation="Horizontal" Margin="15">
                 <StackPanel Margin="25" BorderThickness="1" BorderBrush="AliceBlue">
                     <Button FontSize="24" Margin="45" Height="82" Width="105" BorderThickness="1" BorderBrush="AliceBlue" Click="SaveDOC_Click" >
                         <Button.Content>
@@ -29,7 +24,7 @@
                 <StackPanel Margin="25" BorderThickness="1" BorderBrush="AliceBlue">
                     <Button  FontSize="24" Margin="45" Height="82" Width="105" BorderThickness="1" BorderBrush="AliceBlue" Click="SaveDOCX_Click">
                         <Button.Content>
-                        DOCX
+                            DOCX
                         </Button.Content>
                     </Button>
                 </StackPanel>
