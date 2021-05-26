@@ -6,9 +6,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
+using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,21 +33,51 @@ namespace Dictation
     public sealed partial class saveAs : Page
     {
         string textFile="";
+        string formatFile;
+        StorageFolder folder = null;
+        AppWindow appWindow;
         public saveAs()
         {
             this.InitializeComponent();
-        }
-        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(MainPage));
+            appWindow = MainPage.appWindow;
+            
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
+        {            
+            //CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+            //Window.Current.SetTitleBar(null);
+            //ApplicationView view = ApplicationView.GetForCurrentView();
+            //view.TryEnterFullScreenMode();
             textFile = e.Parameter.ToString();
             base.OnNavigatedTo(e);
+            //var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            //coreTitleBar.ExtendViewIntoTitleBar = true;
         }
+        private async void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                switch (formatFile)
+                {
+                    case "doc":
+                        SaveDOC_Click();
+                        break;
+                    case "docx":
+                        SaveDOCX_Click();
+                        break;
+                    case "pdf":
+                        SavePDF_Click();
+                        break;
+                }
+                await appWindow.CloseAsync();
+            }
+            catch (Exception)
+            {
 
-        private async void SaveDOC_Click(object sender, RoutedEventArgs e)
+            }
+
+        }
+        private async void SaveDOC_Click()
         {
             try
             {
@@ -51,7 +87,7 @@ namespace Dictation
                 MemoryStream stream = new MemoryStream();
                 await doc.SaveAsync(stream, FormatType.Doc).ConfigureAwait(true);
                 doc.Close();
-                SaveFileDoc.SaveWord(stream, "Result.doc");
+                SaveFileDoc.SaveWord(stream, nameFile.Text, pathSaveFile.Text);
                 stream.Dispose();
             }
             catch (ArgumentNullException)
@@ -60,7 +96,7 @@ namespace Dictation
             }
         }
 
-        private async void SaveDOCX_Click(object sender, RoutedEventArgs e)
+        private async void SaveDOCX_Click()
         {
             try
             {
@@ -70,7 +106,8 @@ namespace Dictation
                 MemoryStream streamDocx = new MemoryStream();
                 await docx.SaveAsync(streamDocx, FormatType.Docx).ConfigureAwait(true);
                 docx.Close();
-                SaveFileDocX.SaveWord(streamDocx, "Result.docx");
+                //SaveFileDocX.SaveWord(streamDocx, "Result.docx");
+                SaveFileDocX.SaveWord(streamDocx, nameFile.Text, pathSaveFile.Text);
                 streamDocx.Dispose();
             }
             catch (ArgumentNullException)
@@ -79,7 +116,7 @@ namespace Dictation
             }
         }
 
-        private async void SavePDF_Click(object sender, RoutedEventArgs e)
+        private async void SavePDF_Click()
         {
             try
             {
@@ -91,7 +128,8 @@ namespace Dictation
                     graphics.DrawString(textFile, font, PdfBrushes.Black, new System.Drawing.PointF(0, 0));
                     MemoryStream ms = new MemoryStream();
                     await PDFdocument.SaveAsync(ms).ConfigureAwait(true);
-                    SaveFilePdf.Save(ms, "New PDF file.pdf");
+                    //SaveFilePdf.Save(ms, "New PDF file.pdf");
+                    SaveFilePdf.Save(ms, nameFile.Text, pathSaveFile.Text);
                     PDFdocument.Save(ms);
                     PDFdocument.Close(true);
                     ms.Dispose();
@@ -103,5 +141,26 @@ namespace Dictation
             }
         }
 
+        private void cbFormat_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxItem item = (ComboBoxItem)(cbFormat.SelectedItem);
+            formatFile = (item.Tag.ToString());
+        }               
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            FolderPicker folderPicker = new FolderPicker();
+            folderPicker.SuggestedStartLocation = PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add(".docx");
+            folderPicker.FileTypeFilter.Add(".xlsx");
+            folderPicker.FileTypeFilter.Add(".pptx");
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                pathSaveFile.Text = folder.Path.ToString();
+            }
+        }
     }
 }

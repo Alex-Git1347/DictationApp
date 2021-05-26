@@ -6,14 +6,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Width="515" Height="400" MinWidth="515" MinHeight="400" MaxWidth="515" MaxHeight="400" >
 
-    <Grid>
-        <RelativePanel>
-            <StackPanel Margin="1" Name="backPanel" Orientation="Horizontal">
-                <TextBlock Text="Save as" FontSize="24" x:Uid="SaveAsTextBlock" Width="178" Height="41" Margin="45,0,0,0"/>
+    <Grid Margin="0,0,0,10">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="0*"/>
+        </Grid.RowDefinitions>
+        <RelativePanel Grid.RowSpan="2">
+            <StackPanel Name="backPanel" Orientation="Horizontal" Margin="25,10,0,0">
+                <TextBlock Text="Save as" FontSize="26" x:Uid="SaveAsTextBlock" Width="83" Height="41" Margin="10,0"/>
             </StackPanel>
-            <StackPanel RelativePanel.Below="backPanel" Orientation="Horizontal" Margin="15">
+            <!--<StackPanel   RelativePanel.Below="backPanel" Orientation="Horizontal" Margin="15">
                 <StackPanel Margin="25" BorderThickness="1" BorderBrush="AliceBlue">
                     <Button FontSize="24" Margin="45" Height="82" Width="105" BorderThickness="1" BorderBrush="AliceBlue" Click="SaveDOC_Click" >
                         <Button.Content>
@@ -34,6 +39,40 @@
                             PDF
                         </Button.Content>
                     </Button>
+                </StackPanel>
+            </StackPanel>-->
+            <StackPanel RelativePanel.Below="backPanel" Margin="25,0">
+                <StackPanel Width="458" Margin="0,8">
+                    <TextBlock FontSize="26" Margin="10,2">Name file</TextBlock >
+                    <TextBox x:Name="nameFile"  Margin="10,2" ></TextBox>
+                </StackPanel>
+                <StackPanel Width="458" Margin="0,8">
+                    <TextBlock FontSize="26" Margin="10,2">Save file format</TextBlock >
+
+                    <ComboBox x:Name="cbFormat" Width="438" Margin="10,2" SelectionChanged="cbFormat_SelectionChanged">
+                        <ComboBoxItem Content="Document Word (*.docx)" Tag="docx" />
+                        <ComboBoxItem Content="Document Word 97-2003 (*.doc)" Tag="doc"/>
+                        <ComboBoxItem Content="PDF (*.pdf)" Tag="pdf"/>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Width="458" Margin="0,8">
+                    <TextBlock x:Name="saveTo" FontSize="26" Margin="10,2" Width="156" HorizontalAlignment="Left">Save to</TextBlock >
+                    <!--<TextBlock x:Name="warning" FontSize="12" Margin="10,2" Foreground="Red" ></TextBlock>-->
+                    <Grid Height="32" Width="439">
+                        <Border BorderThickness="2" BorderBrush="Gray">
+                            <TextBlock x:Name="pathSaveFile" Margin="11,0,0,0" HorizontalAlignment="Left" Width="414"/>
+                        </Border>
+                        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center"  >
+                            <Button Click="Button_Click" Margin="0,0,5,0" Width="20" Height="25" Visibility="Visible">
+                                <SymbolIcon Symbol="Folder" VerticalAlignment="Center" Margin="-15,-15"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid >
+                        <Button Click="ButtonSave_Click" Content="Save" Margin="10,25,0,0" Width="200" FontSize="18" Background="#0078d7" Height="35" VerticalAlignment="Top"/>
+                        <Button Click="ButtonSave_Click" Content="Cancel" Margin="10,25" Width="200" FontSize="18" BorderBrush="#0078d7"  HorizontalAlignment="Right" Height="35" Foreground="#FF0078D7"/>
+                    </Grid>
                 </StackPanel>
             </StackPanel>
         </RelativePanel>

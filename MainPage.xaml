@@ -8,22 +8,13 @@
     x:Class="Dictation.MainPage"
     mc:Ignorable="d"
     x:Name="mainPage"
+    
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     >
     <Grid Background="{ ThemeResource SystemChromeBlackMediumColor}" x:Name="mainGrid" >
-        <RelativePanel VariableSizedWrapGrid.ColumnSpan="0"  BorderBrush="Violet" BorderThickness="3" HorizontalAlignment="Center" Width="1280" >
-            <!--<Popup VerticalOffset="10" HorizontalOffset="200" x:Name="StandardPopup" Height="541" Width="231">
-                <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" 
-                Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
-                BorderThickness="2" Width="200" Height="200">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Simple Popup" FontSize="24.667" HorizontalAlignment="Center"/>
-                        <Button Content="Close" Click="ClosePopupClicked" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-            </Popup>-->
+        <RelativePanel VariableSizedWrapGrid.ColumnSpan="0"  BorderBrush="Violet" BorderThickness="3" HorizontalAlignment="Stretch" >
             <Canvas x:Name="PrintCanvas" Opacity="0"/>
-            <StackPanel x:Name="panelMenu" Height="717" Width="370" >
+            <StackPanel x:Name="panelMenu" Height="717" Width="264" >
                 <!--<Button Margin="10">
                     <SymbolIcon Symbol="Home"/>
                     <Button.Flyout>
@@ -56,8 +47,8 @@
                        FontSize="28" FontWeight="Bold" Margin="30 5 0 0" />
                 </RelativePanel>-->
 
-                <SplitView Name="mySplitView" Grid.Row="1" OpenPaneLength="400"
-                   DisplayMode="CompactOverlay" CompactPaneLength="56" >
+                <SplitView Name="mySplitView" Grid.Row="1" OpenPaneLength="300"
+                   DisplayMode="CompactOverlay" CompactPaneLength="56" VerticalAlignment="Stretch" PanePlacement="Left" >
                     <SplitView.Pane>
                         <ListBox x:Name="menu" SelectionMode="Single" SelectionChanged="MenuBox_SelectionChanged" >
                             <ListBoxItem Name="newDocument" VerticalAlignment="Top">
@@ -69,25 +60,25 @@
                             <ListBoxItem Name="openDocument" VerticalAlignment="Top">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock FontSize="36" FontFamily="Segoe MDL2 Assets" Text="&#xE8E5;" />
-                                    <TextBlock FontSize="24" Text="Open Document" Margin="10 0 0 0" />
+                                    <TextBlock FontSize="24" Text="Open Document" Margin="10 0 0 0" x:Uid="OpenFileMenu"/>
                                 </StackPanel>
-                            </ListBoxItem> 
+                            </ListBoxItem>
                             <ListBoxItem Name="Save">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                                     <TextBlock FontSize="36" FontFamily="Segoe MDL2 Assets" Text="&#xE74E;" />
-                                    <TextBlock FontSize="24" Text="Save" Margin="10 0 0 0" />
+                                    <TextBlock FontSize="24" Text="Save" Margin="10 0 0 0" x:Uid="SaveMenu"/>
                                 </StackPanel>
                             </ListBoxItem>
                             <ListBoxItem Name="SaveAs">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                                     <TextBlock FontSize="36" FontFamily="Segoe MDL2 Assets" Text="&#xE792;" />
-                                    <TextBlock FontSize="24" Text="Save as" Margin="10 0 0 0" />
+                                    <TextBlock FontSize="24" Text="Save as" Margin="10 0 0 0" x:Uid="SaveAsMenu"/>
                                 </StackPanel>
                             </ListBoxItem>
                             <ListBoxItem Name="recentFiles">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                                     <TextBlock FontSize="36" FontFamily="Segoe MDL2 Assets" Text="&#xF0B5;" />
-                                    <TextBlock FontSize="24" Text="Recent files" Margin="10 0 0 0" />
+                                    <TextBlock FontSize="24" Text="Recent files" Margin="10 0 0 0" x:Uid="RecentFilesMenu"/>
                                 </StackPanel>
                             </ListBoxItem>
                             <ListBoxItem Name="print" >
@@ -96,7 +87,7 @@
                                     <TextBlock FontSize="24" Text="Print" Margin="10 0 0 0" />
                                 </StackPanel>
                             </ListBoxItem>
-                            <ListBoxItem Name="share" VerticalAlignment="Bottom">
+                            <ListBoxItem Name="share" VerticalAlignment="Bottom" >
                                 <StackPanel Orientation="Horizontal" >
                                     <TextBlock FontSize="36" FontFamily="Segoe MDL2 Assets" Text="&#xE72D;" />
                                     <TextBlock FontSize="24" Text="Share" Margin="10 0 0 0" />
@@ -105,11 +96,11 @@
                             <ListBoxItem Name="settings" VerticalAlignment="Bottom" >
                                 <StackPanel Orientation="Horizontal" >
                                     <TextBlock FontSize="36" FontFamily="Segoe MDL2 Assets" Text="&#xE713;" />
-                                    <TextBlock FontSize="24" Text="Settings" Margin="10 0 0 0" />
+                                    <TextBlock FontSize="24" Text="Settings" Margin="10 0 0 0" x:Uid="SettingsMenu"/>
                                 </StackPanel>
                             </ListBoxItem>
-                            <ListBoxItem Name="about" VerticalAlignment="Bottom" >
-                                <StackPanel Orientation="Horizontal" >
+                            <ListBoxItem Name="about" VerticalAlignment="Bottom"  >
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
                                     <TextBlock FontSize="36" FontFamily="Segoe MDL2 Assets" Text="&#xE946;" />
                                     <TextBlock FontSize="24" Text="About" Margin="10 0 0 0" />
                                 </StackPanel>
@@ -117,7 +108,7 @@
                         </ListBox>
                     </SplitView.Pane>
                     <SplitView.Content>
-                        <Frame Name="myFrame" Margin="0,0,0,0" Content="" />
+                        <Frame Name="myFrame" Content="" HorizontalAlignment="Left"  />
                     </SplitView.Content>
                 </SplitView>
 
@@ -150,14 +141,14 @@
                 </Button>-->
                 <!--<Button x:Name="InvokePrintingButton" Content="Print" Click="OnPrintButtonClick"/>-->
             </StackPanel>
-            <StackPanel x:Name="panelButtons" Orientation="Vertical" RelativePanel.RightOf="panelMenu" RelativePanel.AlignHorizontalCenterWith="" Height="423" >
+            <StackPanel x:Name="panelButtons" Orientation="Vertical" RelativePanel.RightOf="panelMenu"  RelativePanel.AlignHorizontalCenterWith="" Height="423" Margin="80,0,0,0" >
                 <Button x:Name="StartButton" x:Uid="StartRecordingButton" Content="Start recording" Width="200" Height="70" Margin="10,20,10,0" FontSize="20" Click="Start_Button_Click" />
                 <Button x:Name="StoptButton" x:Uid="StopRecordingButton" Content="Stop recording" Width="200" Height="70"  Margin="10" FontSize="18" Click="Stop_Button_Click"/>
                 <Button x:Name="ClearButton" x:Uid="ClearButton" Content="Clear Text" Width="200" Height="70" Margin="10" FontSize="18"  Click="Clear_Button_Click"/>
             </StackPanel>
-            <StackPanel x:Name="dictationBlock" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="617" Width="754">
-                <Border BorderBrush="White"  RelativePanel.RightOf="ComboBoxPanel" BorderThickness="2" Margin="25" Height="566" Width="684">
-                    <TextBox x:Name="dictationTextBox" Text="{x:Bind Path=RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder}" FontSize="16" FontFamily="Bahnschrift Light"  TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0"  />
+            <StackPanel x:Name="dictationBlock" Orientation="Vertical" RelativePanel.RightOf="panelButtons" Height="617" Width="677">
+                <Border BorderBrush="White"  RelativePanel.RightOf="ComboBoxPanel" BorderThickness="2" Margin="25" Height="566" Width="595">
+                    <TextBox x:Name="dictationTextBox" Text="{x:Bind Path=RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder}" FontSize="16" FontFamily="Bahnschrift Light"  TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="-2,2,-2,-2" TextChanged="dictationTextBox_TextChanged"  />
                 </Border>
             </StackPanel>
         </RelativePanel>

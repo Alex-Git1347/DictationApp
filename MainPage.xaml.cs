@@ -62,31 +62,29 @@ namespace Dictation
 
         private void MenuBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (print.IsSelected)
+            {
+                OpenFileDialog_Click(sender, e);
+            }
             if (SaveAs.IsSelected)
             {
                 SaveAs_Click(sender, e);
-                //TitleTextBlock.Text = "Главная";
             }
             else if (recentFiles.IsSelected)
             {
                 Recent_Click(sender, e);
-                //TitleTextBlock.Text = "Поделиться";
             }
             else if (settings.IsSelected)
             {
                 Settings_Click(sender, e);
-                // myFrame.Navigate(typeof(settings));
-                //TitleTextBlock.Text = "Настройки";
             }
             else if (print.IsSelected)
             {
                 OnPrintButtonClick(sender, e);
-                // myFrame.Navigate(typeof(settings));
-                //Tit
-
             }
         }
-            private async void OnPrintButtonClick(object sender, RoutedEventArgs e)
+            
+        private async void OnPrintButtonClick(object sender, RoutedEventArgs e)
         {
             string tempText = dictationTextBox.Text;
             try
@@ -109,19 +107,7 @@ namespace Dictation
             }
         }
 
-        //private void ClosePopupClicked(object sender, RoutedEventArgs e)
-        //{
-        //    // if the Popup is open, then close it 
-        //    if (StandardPopup.IsOpen) { StandardPopup.IsOpen = false; }
-        //}
-
-        //// Handles the Click event on the Button on the page and opens the Popup. 
-        //private void ShowPopupOffsetClicked(object sender, RoutedEventArgs e)
-        //{
-        //    // open the Popup if it isn't open already 
-        //    if (!StandardPopup.IsOpen) { StandardPopup.IsOpen = true; }
-        //}
-
+        
         private async void HaveTempFile()
         {            
             StorageFile stFile;
@@ -255,10 +241,19 @@ namespace Dictation
         private async void SaveAs_Click(object sender, RoutedEventArgs e)
         {
             appWindow = await AppWindow.TryCreateAsync();
+            
             Frame appWindowContentFrame = new Frame();
             appWindowContentFrame.Navigate(typeof(saveAs), dictationTextBox.Text);
             ElementCompositionPreview.SetAppWindowContent(appWindow, appWindowContentFrame);
-            appWindow.RequestSize(new Size(1000, 400));
+            appWindow.RequestSize(new Size(640, 545));
+            //bool switched = appWindow.TitleBar.is     //.Presenter.RequestPresentation(AppWindowPresentationKind.FullScreen);
+            //if (switched)
+            //{
+            //    appWindow.RequestSize(new Size(640, 545));
+            //    // If the request was satisfied, show the window
+            //    await appWindow.TryShowAsync();
+            //}
+
             await appWindow.TryShowAsync();
             //this.mainPage.IsEnabled = false;
 
@@ -583,6 +578,11 @@ namespace Dictation
         private void dictationTextBox_SelectionChanging(TextBox sender, TextBoxSelectionChangingEventArgs args)
         {
             Start_Click();
+        }
+
+        private void dictationTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

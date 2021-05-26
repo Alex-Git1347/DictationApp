@@ -16,7 +16,7 @@ namespace Dictation
     class SaveFileDoc
     {
         public static StorageFile openFile;
-        public static async void SaveWord(MemoryStream streams, string filename)
+        public static async void SaveWord(MemoryStream streams, string fileName, string fileFolder)
         {
             streams.Position = 0;
             StorageFile stFile=null;
@@ -26,9 +26,12 @@ namespace Dictation
                 {
                     FileSavePicker savePicker = new FileSavePicker();
                     savePicker.DefaultFileExtension = ".doc";
-                    savePicker.SuggestedFileName = filename;
+                    savePicker.SuggestedFileName = fileName;
                     savePicker.FileTypeChoices.Add("Word Documents", new List<string>() { ".doc" });
-                    stFile = await savePicker.PickSaveFileAsync();
+                    //stFile = await savePicker.PickSaveFileAsync();
+                    //StorageFolder f = await StorageFolder.GetFolderFromPathAsync("");
+                    StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(fileFolder);
+                    stFile = await folder.CreateFileAsync(fileName + ".doc");
                 }
                 catch (NullReferenceException)
                 {}
@@ -36,7 +39,7 @@ namespace Dictation
             else
             {
                 StorageFolder local = Windows.Storage.ApplicationData.Current.LocalFolder;
-                stFile = await local.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                stFile = await local.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             }
             if (stFile != null)
             {
@@ -51,7 +54,7 @@ namespace Dictation
                 }
                 var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
                 string mruToken = mru.Add(stFile, "Doc file");
-                await Windows.System.Launcher.LaunchFileAsync(stFile);
+                //await Windows.System.Launcher.LaunchFileAsync(stFile);
             }
         }
 

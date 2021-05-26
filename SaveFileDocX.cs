@@ -15,7 +15,7 @@ namespace Dictation
     class SaveFileDocX
     {
         public static StorageFile openFile;
-        public static async void SaveWord(MemoryStream streams, string filename)
+        public static async void SaveWord(MemoryStream streams, string fileName, string fileFolder)
         {
             streams.Position = 0;
             StorageFile stFile = null;
@@ -25,9 +25,11 @@ namespace Dictation
                 {
                     FileSavePicker savePicker = new FileSavePicker();
                     savePicker.DefaultFileExtension = ".docx";
-                    savePicker.SuggestedFileName = filename;
+                    savePicker.SuggestedFileName = fileName;
                     savePicker.FileTypeChoices.Add("Word Documents", new List<string>() { ".docx" });
-                    stFile = await savePicker.PickSaveFileAsync();
+                    //stFile = await savePicker.PickSaveFileAsync();
+                    StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(fileFolder);
+                    stFile = await folder.CreateFileAsync(fileName + ".docx");
                 }
                 catch (NullReferenceException)
                 { }
@@ -35,7 +37,7 @@ namespace Dictation
             else
             {
                 StorageFolder local = Windows.Storage.ApplicationData.Current.LocalFolder;
-                stFile = await local.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                stFile = await local.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             }
             if (stFile != null)
             {
@@ -50,7 +52,7 @@ namespace Dictation
                 }
                 var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
                 string mruToken = mru.Add(stFile, "Docx file");
-                await Windows.System.Launcher.LaunchFileAsync(stFile);
+                //await Windows.System.Launcher.LaunchFileAsync(stFile);
             }
         }
 

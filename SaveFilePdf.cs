@@ -21,7 +21,7 @@ namespace Dictation
     {
         public static StorageFile openFile;
 
-        public static async void Save(MemoryStream streams, string filename)
+        public static async void Save(MemoryStream streams, string fileName,string fileFolder)
         {
             streams.Position = 0;
             StorageFile stFile = null;
@@ -31,9 +31,11 @@ namespace Dictation
                 {
                     FileSavePicker savePicker = new FileSavePicker();
                     savePicker.DefaultFileExtension = ".pdf";
-                    savePicker.SuggestedFileName = filename;
+                    savePicker.SuggestedFileName = fileName;
                     savePicker.FileTypeChoices.Add("PDF Documents", new List<string>() { ".pdf" });
-                    stFile = await savePicker.PickSaveFileAsync();
+                    //stFile = await savePicker.PickSaveFileAsync();
+                    StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(fileFolder);
+                    stFile = await folder.CreateFileAsync(fileName+".pdf");
                 }
                 catch (NullReferenceException)
                 {}
@@ -41,7 +43,7 @@ namespace Dictation
             else
             {
                 StorageFolder local = Windows.Storage.ApplicationData.Current.LocalFolder;
-                stFile = await local.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                stFile = await local.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             }
             if (stFile != null)
             {
@@ -54,7 +56,7 @@ namespace Dictation
                         outstream.Flush();
                     }
                 }
-                await Windows.System.Launcher.LaunchFileAsync(stFile);
+                //await Windows.System.Launcher.LaunchFileAsync(stFile);
             }
         }
                 
