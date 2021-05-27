@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Globalization;
 using Windows.Media.SpeechRecognition;
+using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -16,6 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -24,9 +26,9 @@ namespace Dictation
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class settings : Page
+    public sealed partial class Settings : Page
     {
-        public settings()
+        public Settings()
         {
             this.InitializeComponent();
             PopulateLanguageInterfaceDropdown();
@@ -35,6 +37,9 @@ namespace Dictation
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            //radio.Items.Add("item");
+            //radio.Items.Add("item1");
+            //radio.Items.Add("item2");
         }
 
         private void RecordingLanguageSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -118,31 +123,36 @@ namespace Dictation
 
         private void SelectedThemeApp(object sender, RoutedEventArgs e)
         {
-            ComboBoxItem item = (ComboBoxItem)(ColorTheme.SelectedItem);
-            if (item.Content.ToString() == "Light")
-            {
-                //App.Current.RequestedTheme = ApplicationTheme.Light;
-                //Application.Current.RequestedTheme = ApplicationTheme.Light;
-                if (Window.Current.Content is FrameworkElement frameworkElement)
-                {
-                    frameworkElement.RequestedTheme = ElementTheme.Light;
+            //ComboBoxItem item = (ComboBoxItem)(ColorTheme.SelectedItem);
+            //if (item.Content.ToString() == "Light")
+            //{
+            //    //App.Current.RequestedTheme = ApplicationTheme.Light;
+            //    //Application.Current.RequestedTheme = ApplicationTheme.Light;
+            //    if (Window.Current.Content is FrameworkElement frameworkElement)
+            //    {
+            //        frameworkElement.RequestedTheme = ElementTheme.Light;
 
-                }
-            }
-            else if (item.Content.ToString() == "Dark")
-            {
-                //Application.Current.RequestedTheme = ApplicationTheme.Light;
-                //App.Current.RequestedTheme = ApplicationTheme.Dark;
-                if (Window.Current.Content is FrameworkElement frameworkElement)
-                {
-                    frameworkElement.RequestedTheme = ElementTheme.Dark;
-                }
-            }
+            //    }
+            //}
+            //else if (item.Content.ToString() == "Dark")
+            //{
+            //    //Application.Current.RequestedTheme = ApplicationTheme.Light;
+            //    //App.Current.RequestedTheme = ApplicationTheme.Dark;
+            //    if (Window.Current.Content is FrameworkElement frameworkElement)
+            //    {
+            //        frameworkElement.RequestedTheme = ElementTheme.Dark;
+            //    }
+            //}
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(MainPage));
+        }
+
+        private void BackgroundColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           
         }
     }
 }

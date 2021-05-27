@@ -92,7 +92,7 @@ namespace Dictation
                 printHelper.RegisterForPrinting();
                 printHelper.PreparePrintContent(new PageToPrint(tempText));
             }
-            catch (Exception arg)
+            catch (Exception)
             {
 
             }
@@ -243,7 +243,7 @@ namespace Dictation
             appWindow = await AppWindow.TryCreateAsync();
             
             Frame appWindowContentFrame = new Frame();
-            appWindowContentFrame.Navigate(typeof(saveAs), dictationTextBox.Text);
+            appWindowContentFrame.Navigate(typeof(SaveAs), dictationTextBox.Text);
             ElementCompositionPreview.SetAppWindowContent(appWindow, appWindowContentFrame);
             appWindow.RequestSize(new Size(640, 545));
             //bool switched = appWindow.TitleBar.is     //.Presenter.RequestPresentation(AppWindowPresentationKind.FullScreen);
@@ -412,7 +412,7 @@ namespace Dictation
         {
             appWindow = await AppWindow.TryCreateAsync();
             Frame appWindowContentFrame = new Frame();
-            appWindowContentFrame.Navigate(typeof(settings), RecognizerViewModel);
+            appWindowContentFrame.Navigate(typeof(Settings), RecognizerViewModel);
             ElementCompositionPreview.SetAppWindowContent(appWindow, appWindowContentFrame);
             appWindow.RequestSize(new Size(500, 900));
             await appWindow.TryShowAsync();
@@ -465,7 +465,7 @@ namespace Dictation
 
             appWindow = await AppWindow.TryCreateAsync();
             Frame appWindowContentFrame = new Frame();
-            appWindowContentFrame.Navigate(typeof(recent),files);
+            appWindowContentFrame.Navigate(typeof(RecentFiles),files);
             ElementCompositionPreview.SetAppWindowContent(appWindow, appWindowContentFrame);
             appWindow.RequestSize(new Size(500, 900));
             await appWindow.TryShowAsync();
@@ -478,8 +478,8 @@ namespace Dictation
                 appWindowContentFrame.Content = null;
                 appWindow = null;
                 this.mainPage.IsEnabled = true;
-                recentFile = recent.openFile;
-                recent.openFile = null;
+                recentFile = RecentFiles.openFile;
+                RecentFiles.openFile = null;
                 OpenFileDialog_Click(null, null);
             };
         }

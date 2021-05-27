@@ -69,6 +69,9 @@ namespace Dictation
         
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.ExtendViewIntoTitleBar = false;
+
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -107,7 +110,7 @@ namespace Dictation
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
                 // Обеспечение активности текущего окна
-                Window.Current.Activate();
+                Window.Current.Activate();                
             }
         }
 

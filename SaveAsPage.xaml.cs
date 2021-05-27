@@ -30,24 +30,25 @@ namespace Dictation
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class saveAs : Page
+    public sealed partial class SaveAs : Page
     {
         string textFile="";
         string formatFile;
         StorageFolder folder = null;
         AppWindow appWindow;
-        public saveAs()
+        public SaveAs()
         {
             this.InitializeComponent();
             appWindow = MainPage.appWindow;
             
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
-        {            
+        {
             //CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
             //Window.Current.SetTitleBar(null);
             //ApplicationView view = ApplicationView.GetForCurrentView();
             //view.TryEnterFullScreenMode();
+
             textFile = e.Parameter.ToString();
             base.OnNavigatedTo(e);
             //var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
@@ -149,7 +150,6 @@ namespace Dictation
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-
             FolderPicker folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = PickerLocationId.Desktop;
             folderPicker.FileTypeFilter.Add(".docx");

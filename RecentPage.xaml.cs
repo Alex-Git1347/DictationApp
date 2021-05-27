@@ -22,12 +22,12 @@ namespace Dictation
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class recent : Page
+    public sealed partial class RecentFiles : Page
     {
         private List<StorageFile> files;
         AppWindow appWindow;
         static public StorageFile openFile;
-        public recent()
+        public RecentFiles()
         {
             this.InitializeComponent();
             appWindow = MainPage.appWindow;
