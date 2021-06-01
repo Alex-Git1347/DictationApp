@@ -7,7 +7,7 @@ using Windows.UI.Core;
 
 namespace Dictation
 {
-    class RecognizerSpeechViewModel 
+    public class RecognizerSpeechViewModel 
     {
         public RecognizerSpeech RecognizerSpeech { get; set; }
 

@@ -22,46 +22,42 @@ namespace Dictation
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class RecentFiles : Page
+    public sealed partial class RecentList : Page
     {
-        private List<StorageFile> files;
-        AppWindow appWindow;
-        static public StorageFile openFile;
-        public RecentFiles()
+        //AppWindow appWindow;
+        //static public StorageFile openFile;
+        public RecentFilesViewModel RecentView { get; set; }
+        RecognizerSpeechViewModel recognizerSpeechViewModel { get; set; }
+        public RecentList()
         {
             this.InitializeComponent();
-            appWindow = MainPage.appWindow;
+            ////appWindow = MainPage.appWindow;
         }
+
+
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            try
-            {
-                files = (List<StorageFile>)e.Parameter;
-                foreach (var file in files)
-                {
-                    Button button = new Button();
-                    button.Click += OpenFile_Click;
-                    button.Content = file.Path;
-                    recentList.Children.Add(button);
-                }
-            }
-            catch (ArgumentNullException) { }
-            base.OnNavigatedTo(e);
+            recognizerSpeechViewModel = e.Parameter as RecognizerSpeechViewModel;
+            this.RecentView = new RecentFilesViewModel(recognizerSpeechViewModel);
         }
+                
+        //private async void OpenFile_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Button button = (Button)sender;
+        //    StorageFile file = files.FirstOrDefault(f => f.Path.ToString() == button.Content.ToString());
+        //    openFile = file;
+        //    await appWindow.CloseAsync();
+        //    //MainPage.page.RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder = "";
+        //}
 
-        private async void OpenFile_Click(object sender, RoutedEventArgs e)
+        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
-            Button button = (Button)sender;
-            StorageFile file = files.FirstOrDefault(f => f.Path.ToString() == button.Content.ToString());
-            openFile = file;
-            await appWindow.CloseAsync();
-            
-        }
-
-        private void BackToMain_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(MainPage));
+            //HyperlinkButton hyperlink = (HyperlinkButton)sender;
+            //StorageFile file = RecentView.ResentFiles.FirstOrDefault(f => f.thisFile.Name == hyperlink.Content.ToString()).thisFile;
+            //openFile = file;
+            //await appWindow.CloseAsync();
+            //MainPage.page.RecognizerViewModel.RecognizerSpeech.dictatedTextBuilder = file.;FirstOrDefault(f => f.Name.ToString() == hyperlink.Content.ToString());
         }
     }
 }

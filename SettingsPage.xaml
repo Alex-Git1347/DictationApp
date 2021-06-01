@@ -33,7 +33,11 @@
                         <ToggleSwitch Height="63" Width="145">
                             <TextBlock Text="Auto save file every" FontSize="16"  Style="{StaticResource BaseTextBlockStyle}"  Height="16" TextLineBounds="TrimToCapHeight" VerticalAlignment="Top"/>
                         </ToggleSwitch>
-                        <ComboBox Margin="0,-9,0,4" x:Name="Timer" SelectionChanged="SelectedThemeApp" Width="238" HorizontalAlignment="Right"  />
+                        <ComboBox Margin="0,-9,0,4" x:Name="Timer" SelectionChanged="SelectedTimer" Width="238" HorizontalAlignment="Right">
+                            <ComboBoxItem Content="1 min" />
+                            <ComboBoxItem Content="10 min" />
+                            <ComboBoxItem Content="30 min" />
+                        </ComboBox>
                     </Grid>
                     <Grid Margin="25,7,26,0">
                         <ToggleSwitch Height="63" Width="200">

@@ -28,6 +28,7 @@ namespace Dictation
     /// </summary>
     public sealed partial class Settings : Page
     {
+        static public Language newLanguage;
         public Settings()
         {
             this.InitializeComponent();
@@ -37,9 +38,7 @@ namespace Dictation
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //radio.Items.Add("item");
-            //radio.Items.Add("item1");
-            //radio.Items.Add("item2");
+
         }
 
         private void RecordingLanguageSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -91,7 +90,6 @@ namespace Dictation
             }
         }
 
-        static public Language newLanguage;
         private async void LanguageInterface_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Frame != null)
@@ -119,6 +117,11 @@ namespace Dictation
                     }
                 }
             }
+        }
+
+        private void SelectedTimer(object sender, SelectionChangedEventArgs e)
+        {
+
         }
 
         private void SelectedThemeApp(object sender, RoutedEventArgs e)
@@ -150,9 +153,5 @@ namespace Dictation
             this.Frame.Navigate(typeof(MainPage));
         }
 
-        private void BackgroundColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-           
-        }
     }
 }

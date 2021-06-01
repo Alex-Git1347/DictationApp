@@ -30,13 +30,13 @@ namespace Dictation
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class MainPage 
+    public sealed partial class MainPage
     {
         static public string token;
         private CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
-        private RecognizerSpeechViewModel RecognizerViewModel { get; set; }
+        public RecognizerSpeechViewModel RecognizerViewModel { get; set; }
         string languageTag = "";
-        string CurrentFormatFile="";
+        string currentFormatFile="";
         ShareOperation shareOperation = null;
         public StorageFile openFile;
         public StorageFile recentFile;
@@ -207,19 +207,19 @@ namespace Dictation
                             SaveFilePdf.openFile = f;
                             openFile = f;
                             textFile = await SaveFilePdf.Read(openFile).ConfigureAwait(true);
-                            CurrentFormatFile ="PDF";
+                            currentFormatFile ="PDF";
                             break;
                         case ".doc": 
                             SaveFileDoc.openFile = f;
                             openFile = f;
                             textFile = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
-                            CurrentFormatFile = "DOC";
+                            currentFormatFile = "DOC";
                             break;
                         case ".docx": 
                             SaveFileDocX.openFile = f;
                             openFile = f;
                             textFile = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
-                            CurrentFormatFile = "DOCX";
+                            currentFormatFile = "DOCX";
                             break;
                     }
                 }
@@ -276,24 +276,19 @@ namespace Dictation
             if (tmp != null)
             {
                 newLanguage = tmp;
-            }
-            if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer != null)
-            {
-                if (newLanguage != null)
+
+                if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer != null && RecognizerViewModel.RecognizerSpeech.SpeechRecognizer.CurrentLanguage != newLanguage)
                 {
-                    if (RecognizerViewModel.RecognizerSpeech.SpeechRecognizer.CurrentLanguage != newLanguage)
+                    try
                     {
-                        try
-                        {
-                            RecognizerViewModel.RecognizerSpeech = null;
-                            RecognizerViewModel.RecognizerSpeech = new RecognizerSpeech(dispatcher, newLanguage);
-                            languageTag = newLanguage.LanguageTag;
-                        }
-                        catch (ArgumentException exception)
-                        {
-                            var messageDialog = new MessageDialog(exception.Message, "Exception");
-                            await messageDialog.ShowAsync();
-                        }
+                        RecognizerViewModel.RecognizerSpeech = null;
+                        RecognizerViewModel.RecognizerSpeech = new RecognizerSpeech(dispatcher, newLanguage);
+                        languageTag = newLanguage.LanguageTag;
+                    }
+                    catch (ArgumentException exception)
+                    {
+                        var messageDialog = new MessageDialog(exception.Message, "Exception");
+                        await messageDialog.ShowAsync();
                     }
                 }
             }
@@ -356,26 +351,26 @@ namespace Dictation
             {
                 case ".pdf":
                     dictationTextBox.Text = await SaveFilePdf.Read(openFile).ConfigureAwait(true);
-                    CurrentFormatFile = "PDF";
+                    currentFormatFile = "PDF";
                     break;
 
                 case ".docx":
                     dictationTextBox.Text = await SaveFileDocX.OpenFileWord(openFile).ConfigureAwait(true);
-                    CurrentFormatFile = "DOCX";
+                    currentFormatFile = "DOCX";
                     break;
 
                 case ".doc":
                     dictationTextBox.Text = await SaveFileDoc.OpenFileWord(openFile).ConfigureAwait(true);
-                    CurrentFormatFile = "DOC";
+                    currentFormatFile = "DOC";
                     break;
             }
         }
 
         private async void SaveChangesCurrentFile_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentFormatFile.Length != 0)
+            if (currentFormatFile.Length != 0)
             {
-                switch (CurrentFormatFile)
+                switch (currentFormatFile)
                 {
                     case "PDF":
                         SaveFilePdf.SaveChangesFile(dictationTextBox.Text);
@@ -465,7 +460,7 @@ namespace Dictation
 
             appWindow = await AppWindow.TryCreateAsync();
             Frame appWindowContentFrame = new Frame();
-            appWindowContentFrame.Navigate(typeof(RecentFiles),files);
+            appWindowContentFrame.Navigate(typeof(RecentList),RecognizerViewModel);
             ElementCompositionPreview.SetAppWindowContent(appWindow, appWindowContentFrame);
             appWindow.RequestSize(new Size(500, 900));
             await appWindow.TryShowAsync();
@@ -473,14 +468,15 @@ namespace Dictation
             
             appWindow.Closed += delegate
             {
-                //Task.Delay(1000);
-                dictationTextBox.Text = "";
-                appWindowContentFrame.Content = null;
-                appWindow = null;
+            //    //Task.Delay(1000);
+            //    dictationTextBox.Text = "";
+            //    appWindowContentFrame.Content = null;
+            //    appWindow = null;
                 this.mainPage.IsEnabled = true;
-                recentFile = RecentFiles.openFile;
-                RecentFiles.openFile = null;
-                OpenFileDialog_Click(null, null);
+            //    recentFile = RecentList.openFile;
+            //    RecentList.openFile = null;
+            //    OpenFileDialog_Click(null, null);
+            //
             };
         }
                 
@@ -582,7 +578,6 @@ namespace Dictation
 
         private void dictationTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
     }
 }

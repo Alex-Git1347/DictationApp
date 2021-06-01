@@ -12,7 +12,7 @@ using Windows.Globalization;
 
 namespace Dictation
 {
-    class RecognizerSpeech
+    public class RecognizerSpeech
     {
         private SpeechRecognizer speechRecognizer;
         private CoreDispatcher dispatcher;
