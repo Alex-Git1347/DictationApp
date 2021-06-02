@@ -8,6 +8,9 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+
+    </Page.Resources>
     <Grid>
         <RelativePanel x:Name="recentPanel">
             <StackPanel Name="backPanel" Orientation="Horizontal" Margin="0,0,10,10" >
@@ -28,7 +31,8 @@
                     <StackPanel Orientation="Horizontal">
                         <SymbolIcon Symbol="OpenFile"/>
                             <StackPanel Margin="6">
-                                <HyperlinkButton Command="{Binding method}">
+                                <Button Command="{Binding Test}"> werwr</Button>
+                                <HyperlinkButton Command="{Binding Test}">
                                     <TextBlock Text="{x:Bind thisFile.Path}" FontWeight="Bold"/>
                                 </HyperlinkButton>
                                 <TextBlock Text="{x:Bind thisFile.Path}" />

@@ -44,6 +44,11 @@ namespace Dictation
         private PrintHelper printHelper;
         string taskName = "AutoSaveFile";
         public static MainPage page;
+        private MainViewModel mainViewModel;
+        public MainViewModel MainView
+        {
+            get;set;
+        }
 
         public MainPage()
         {
@@ -52,7 +57,7 @@ namespace Dictation
             RecognizerViewModel = new RecognizerSpeechViewModel(dispatcher);
             HaveTempFile();
             page = (MainPage)this.mainPage;
-            
+            MainView = new MainViewModel();
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
